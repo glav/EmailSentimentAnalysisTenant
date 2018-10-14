@@ -11,7 +11,10 @@ namespace CollectMailTrigger
         public static void Run([TimerTrigger("0/30 * * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-            
+
         }
+
+
     }
+
 }
