@@ -13,9 +13,8 @@ namespace EmailSentimentAnalysis.Core
         private readonly Microsoft.Extensions.Logging.ILogger _functionsLogger;
 
 
-        public DiagnosticLogger(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger)
+        protected DiagnosticLogger(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger)
         {
-            Initialise();
             _appConfig = appConfig;
             _functionsLogger = functionsLogger;
         }
@@ -43,6 +42,13 @@ namespace EmailSentimentAnalysis.Core
             }
 
             Log.Logger = _logger;
+        }
+
+        public static DiagnosticLogger CreateInstance(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger)
+        {
+            var diagLogger = new DiagnosticLogger(appConfig, functionsLogger);
+            diagLogger.Initialise();
+            return diagLogger;
         }
 
         public void Debug(string message)

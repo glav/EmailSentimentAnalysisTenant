@@ -11,10 +11,12 @@ namespace Core
         public static DependencyInstances Setup(Microsoft.Extensions.Logging.ILogger functionsLogger)
         {
             var config = new AppConfig();
+            var diagLogger = DiagnosticLogger.CreateInstance(config, functionsLogger);
+
             return new DependencyInstances
                 (
                     config,
-                    new DiagnosticLogger(config, functionsLogger)
+                    diagLogger
                 );
         }
     }
