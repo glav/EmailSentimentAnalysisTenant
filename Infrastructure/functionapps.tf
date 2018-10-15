@@ -1,15 +1,15 @@
 resource "azurerm_storage_account" "EmailSentiment" {
   name                     = "emailsentimentsa${var.environment}"
   resource_group_name      = "${azurerm_resource_group.EmailSentiment.name}"
-  location                 = "${azurerm_resource_group.EmailSentiment.location}"
+  location                 = "${var.location}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
 resource "azurerm_app_service_plan" "EmailSentiment" {
   name                = "triggermail-service-plan-${var.environment}"
-  location            = "${azurerm_resource_group.EmailSentiment.location}"
   resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
+  location            = "${var.location}"
   kind                = "FunctionApp"
 
   sku {
@@ -20,30 +20,28 @@ resource "azurerm_app_service_plan" "EmailSentiment" {
 
 resource "azurerm_function_app" "EmailSentimentTriggerMailFuncApp" {
   name                      = "trigger-mail-function-${var.environment}"
-  location                  = "${azurerm_resource_group.EmailSentiment.location}"
   resource_group_name       = "${azurerm_resource_group.EmailSentiment.name}"
+  location                  = "${var.location}"
   app_service_plan_id       = "${azurerm_app_service_plan.EmailSentiment.id}"
   storage_connection_string = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
-  
+
   app_settings {
-    "FUNCTIONS_EXTENSION_VERSION" = "~2"
+    "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
   }
 }
 
-
 resource "azurerm_function_app" "EmailSentimentCollectMailFuncApp" {
   name                      = "collect-mail-function-${var.environment}"
-  location                  = "${azurerm_resource_group.EmailSentiment.location}"
   resource_group_name       = "${azurerm_resource_group.EmailSentiment.name}"
+  location                  = "${var.location}"
   app_service_plan_id       = "${azurerm_app_service_plan.EmailSentiment.id}"
   storage_connection_string = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
 
   app_settings {
-    "FUNCTIONS_EXTENSION_VERSION" = "~2"
+    "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
   }
-
 }
 
 resource "azurerm_function_app" "EmailSentimentCleanMailFuncApp" {
@@ -54,10 +52,9 @@ resource "azurerm_function_app" "EmailSentimentCleanMailFuncApp" {
   storage_connection_string = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
 
   app_settings {
-    "FUNCTIONS_EXTENSION_VERSION" = "~2"
+    "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
   }
-
 }
 
 resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
@@ -68,8 +65,7 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
   storage_connection_string = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
 
   app_settings {
-    "FUNCTIONS_EXTENSION_VERSION" = "~2"
+    "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
   }
-
 }

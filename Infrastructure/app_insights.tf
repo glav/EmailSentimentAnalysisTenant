@@ -3,5 +3,5 @@ module "app_insights_functions" {
 
     environment = "${var.environment}"
     location = "${var.location}"
-    resource_group_name = "${local.resource_group_name}"
+    resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
 }
