@@ -17,6 +17,7 @@ resource "azurerm_servicebus_namespace" "EmailSentimentSb" {
   }
 }
 
+# Service Bus
 resource "azurerm_servicebus_topic" "EmailSentimentCollectTopic" {
   name                = "${var.servicebus_collect_topic_name}"
   resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
