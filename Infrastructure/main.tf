@@ -43,7 +43,7 @@ resource "azurerm_servicebus_topic" "EmailSentimentProcessTopic" {
 resource "azurerm_application_insights" "EmailSentimentMetrics" {
   name                = "emailsentiment-appinsights-${var.environment}"
   location            = "${var.app_insights_location}"
-  resource_group_name = "${local.resource_group_name}"
+  resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
   application_type    = "Web"
 }
 
