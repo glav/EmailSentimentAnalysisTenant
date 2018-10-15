@@ -1,23 +1,28 @@
 using System;
+using Core.Config;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.ILogger;
 
 namespace EmailSentimentAnalysis.Core
 {
     public class DiagnosticLogger : IDiagnosticLogger
     {
         private ILogger _logger;
+        private readonly IAppConfig _appConfig;
+        private readonly Microsoft.Extensions.Logging.ILogger _functionsLogger;
 
 
-        public DiagnosticLogger()
+        public DiagnosticLogger(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger)
         {
             Initialise();
+            _appConfig = appConfig;
+            _functionsLogger = functionsLogger;
         }
 
         private void Initialise()
         {
-            bool isInLocalDevMode = System.Environment.GetEnvironmentVariable("SOME_VAR") == "some value";
-            if (isInLocalDevMode)
+            if (!_appConfig.IsHostedInAzure)
             {
                 _logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
@@ -33,11 +38,11 @@ namespace EmailSentimentAnalysis.Core
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .Enrich.FromLogContext()
                     .WriteTo.Console()
+                    .WriteTo.ILogger(_functionsLogger)
                     .CreateLogger();
             }
 
             Log.Logger = _logger;
-
         }
 
         public void Debug(string message)

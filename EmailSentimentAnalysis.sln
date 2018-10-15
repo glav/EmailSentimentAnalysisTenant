@@ -7,6 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectMailScheduler", "Col
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{359DB360-A390-4493-B5C5-3B45A9CA2A5B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{3CB4CA6D-406C-4764-BC14-CAE36C816D94}"
+	ProjectSection(SolutionItems) = preProject
+		Infrastructure\functionapps.tf = Infrastructure\functionapps.tf
+		Infrastructure\main.tf = Infrastructure\main.tf
+		Infrastructure\tconfig.tf = Infrastructure\tconfig.tf
+		Infrastructure\variables.tf = Infrastructure\variables.tf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
