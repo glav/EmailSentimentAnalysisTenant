@@ -27,7 +27,7 @@ resource "azurerm_function_app" "EmailSentimentTriggerMailFuncApp" {
 
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
   }
 }
 
@@ -40,7 +40,7 @@ resource "azurerm_function_app" "EmailSentimentCollectMailFuncApp" {
 
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
   }
 }
 
@@ -53,7 +53,7 @@ resource "azurerm_function_app" "EmailSentimentCleanMailFuncApp" {
 
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
   }
 }
 
@@ -66,6 +66,6 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
 
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${module.app_insights_functions.instrumentation_key}"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
   }
 }

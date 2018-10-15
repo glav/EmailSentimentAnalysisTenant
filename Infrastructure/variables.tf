@@ -5,6 +5,10 @@ variable "location" {
   default = "australiaeast"
 }
 
+variable "app_insights_location" {
+  default = "southeastasia"
+}
+
 variable "app" {
   default = "EmailSentiment"
 }
