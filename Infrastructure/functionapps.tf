@@ -1,3 +1,10 @@
+resource "azurerm_application_insights" "EmailSentimentMetrics" {
+  name                = "emailsentiment-appinsights-${var.environment}"
+  location            = "${var.app_insights_location}"
+  resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
+  application_type    = "Web"
+}
+
 resource "azurerm_storage_account" "EmailSentiment" {
   name                     = "emailsentimentsa${var.environment}"
   resource_group_name      = "${azurerm_resource_group.EmailSentiment.name}"
@@ -72,4 +79,17 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
   }
+}
+
+
+output "instrumentation_key" {
+  value = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
+}
+
+output "app_id" {
+  value = "${azurerm_application_insights.EmailSentimentMetrics.app_id}"
+}
+
+output "id" {
+  value = "${azurerm_application_insights.EmailSentimentMetrics.id}"
 }
