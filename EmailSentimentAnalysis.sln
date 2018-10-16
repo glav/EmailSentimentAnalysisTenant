@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectMailScheduler", "CollectMailScheduler\CollectMailScheduler.csproj", "{620CC6E0-30B6-4649-A8CA-BCE28DB656E1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{359DB360-A390-4493-B5C5-3B45A9CA2A5B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{3CB4CA6D-406C-4764-BC14-CAE36C816D94}"
@@ -21,16 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailProcessorFunction", "Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailSanitiserFunction", "MailSanitiserFunction\MailSanitiserFunction.csproj", "{DA6D739E-0589-44DD-8C13-CBE32E3C6921}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectMailScheduler", "CollectMailSchedulerFunction\CollectMailScheduler.csproj", "{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{620CC6E0-30B6-4649-A8CA-BCE28DB656E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{620CC6E0-30B6-4649-A8CA-BCE28DB656E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{620CC6E0-30B6-4649-A8CA-BCE28DB656E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{620CC6E0-30B6-4649-A8CA-BCE28DB656E1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{359DB360-A390-4493-B5C5-3B45A9CA2A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{359DB360-A390-4493-B5C5-3B45A9CA2A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{359DB360-A390-4493-B5C5-3B45A9CA2A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,6 +43,10 @@ Global
 		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
