@@ -10,7 +10,13 @@ namespace MailSanitiserFunction
     {
         public MailSanitiserEngine()
         {
+            SetupStrategies();
+        }
+
+        private void SetupStrategies()
+        {
             SanitiserStrategies = new List<IMailSanitiserStrategy>();
+            SanitiserStrategies.Add(new RemoveAllButBodyStrategy());
             SanitiserStrategies.Add(new RemoveHtmlStrategy());
         }
 
@@ -19,6 +25,11 @@ namespace MailSanitiserFunction
         public string Sanitise(string content, SanitiseContentType contentType)
         {
             if (SanitiserStrategies.Count == 0)
+            {
+                return content;
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
             {
                 return content;
             }

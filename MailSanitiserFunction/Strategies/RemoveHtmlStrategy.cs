@@ -11,10 +11,6 @@ namespace MailSanitiserFunction.Strategies
 
         public string SanitiseContent(string content)
         {
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                return content;
-            }
             return Regex.Replace(content, "<.*?>", String.Empty);
         }
     }
