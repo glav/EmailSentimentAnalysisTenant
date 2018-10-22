@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MailSanitiserFunction\MailSanitiserFunction.csproj" />
+    <ProjectReference Include="..\..\Functions\MailSanitiserFunction\MailSanitiserFunction.csproj" />
   </ItemGroup>
 
 </Project>

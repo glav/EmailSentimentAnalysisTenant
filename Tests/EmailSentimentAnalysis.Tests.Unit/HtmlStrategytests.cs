@@ -33,5 +33,27 @@ namespace EmailSentimentAnalysis.Tests.Unit
 
             Assert.Equal("<p>this is my body</p>", result);
         }
+
+        [Fact]
+        public void ShouldStripAllButBodyElementFromEmailHtml()
+        {
+            var engine = new RemoveAllButBodyStrategy();
+            var result = engine.SanitiseContent(_emailHtmlContent);
+
+            Assert.DoesNotContain("<body",result.ToLowerInvariant());
+            Assert.DoesNotContain("</body", result.ToLowerInvariant());
+        }
+
+        [Fact]
+        public void ShouldStripAllButBodyElementFromEmailHtmlAndRemoveMarkup()
+        {
+            var engine = new MailSanitiserEngine();
+            var result = engine.SanitiseForAllContentTypes(_emailHtmlContent);
+
+            Assert.DoesNotContain("<body", result.ToLowerInvariant());
+            Assert.DoesNotContain("</body", result.ToLowerInvariant());
+            Assert.False(result.Contains('<'));
+            Assert.False(result.Contains('>'));
+        }
     }
 }

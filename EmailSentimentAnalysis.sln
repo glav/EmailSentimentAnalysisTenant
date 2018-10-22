@@ -13,17 +13,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 		Infrastructure\variables.tf = Infrastructure\variables.tf
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailCollectorFunction", "MailCollectorFunction\MailCollectorFunction.csproj", "{26B2013D-F1F9-4DC1-92C7-7EDAAA5BC54F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailProcessorFunction", "MailProcessorFunction\MailProcessorFunction.csproj", "{1E943738-505A-4AD5-9AD6-2FB1BF3089EE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailSanitiserFunction", "MailSanitiserFunction\MailSanitiserFunction.csproj", "{DA6D739E-0589-44DD-8C13-CBE32E3C6921}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollectMailScheduler", "CollectMailSchedulerFunction\CollectMailScheduler.csproj", "{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7A655222-A45C-4443-B020-956EBFF2FE83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailSentimentAnalysis.Tests.Unit", "Tests\EmailSentimentAnalysis.Tests.Unit\EmailSentimentAnalysis.Tests.Unit.csproj", "{CE217004-B348-4E72-9E5E-AB2DE323A050}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailSentimentAnalysis.Tests.Unit", "Tests\EmailSentimentAnalysis.Tests.Unit\EmailSentimentAnalysis.Tests.Unit.csproj", "{CE217004-B348-4E72-9E5E-AB2DE323A050}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{3051EB45-8F19-4159-9E6E-1685C3BE24DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailSchedulerFunction", "Functions\MailSchedulerFunction\MailSchedulerFunction.csproj", "{3826C49C-4029-4D19-9091-9F4FBF7B0DFF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailSanitiserFunction", "Functions\MailSanitiserFunction\MailSanitiserFunction.csproj", "{F5933DDE-E3B7-47FE-B5D1-CCB8D44C7C88}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailProcessorFunction", "Functions\MailProcessorFunction\MailProcessorFunction.csproj", "{1BA4AB08-A52C-47D8-82DF-569A360042F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailCollectorFunction", "Functions\MailCollectorFunction\MailCollectorFunction.csproj", "{8FFCB50F-50BA-4D0C-9276-DE72440DCBAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,32 +37,36 @@ Global
 		{359DB360-A390-4493-B5C5-3B45A9CA2A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{359DB360-A390-4493-B5C5-3B45A9CA2A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{359DB360-A390-4493-B5C5-3B45A9CA2A5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26B2013D-F1F9-4DC1-92C7-7EDAAA5BC54F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26B2013D-F1F9-4DC1-92C7-7EDAAA5BC54F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26B2013D-F1F9-4DC1-92C7-7EDAAA5BC54F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26B2013D-F1F9-4DC1-92C7-7EDAAA5BC54F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E943738-505A-4AD5-9AD6-2FB1BF3089EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E943738-505A-4AD5-9AD6-2FB1BF3089EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E943738-505A-4AD5-9AD6-2FB1BF3089EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E943738-505A-4AD5-9AD6-2FB1BF3089EE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA6D739E-0589-44DD-8C13-CBE32E3C6921}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A88D1527-DB4B-4CB8-B9AD-E45D6412035B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE217004-B348-4E72-9E5E-AB2DE323A050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE217004-B348-4E72-9E5E-AB2DE323A050}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE217004-B348-4E72-9E5E-AB2DE323A050}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE217004-B348-4E72-9E5E-AB2DE323A050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3826C49C-4029-4D19-9091-9F4FBF7B0DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3826C49C-4029-4D19-9091-9F4FBF7B0DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3826C49C-4029-4D19-9091-9F4FBF7B0DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3826C49C-4029-4D19-9091-9F4FBF7B0DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5933DDE-E3B7-47FE-B5D1-CCB8D44C7C88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5933DDE-E3B7-47FE-B5D1-CCB8D44C7C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5933DDE-E3B7-47FE-B5D1-CCB8D44C7C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5933DDE-E3B7-47FE-B5D1-CCB8D44C7C88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BA4AB08-A52C-47D8-82DF-569A360042F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA4AB08-A52C-47D8-82DF-569A360042F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA4AB08-A52C-47D8-82DF-569A360042F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA4AB08-A52C-47D8-82DF-569A360042F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FFCB50F-50BA-4D0C-9276-DE72440DCBAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FFCB50F-50BA-4D0C-9276-DE72440DCBAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FFCB50F-50BA-4D0C-9276-DE72440DCBAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FFCB50F-50BA-4D0C-9276-DE72440DCBAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CE217004-B348-4E72-9E5E-AB2DE323A050} = {7A655222-A45C-4443-B020-956EBFF2FE83}
+		{3826C49C-4029-4D19-9091-9F4FBF7B0DFF} = {3051EB45-8F19-4159-9E6E-1685C3BE24DF}
+		{F5933DDE-E3B7-47FE-B5D1-CCB8D44C7C88} = {3051EB45-8F19-4159-9E6E-1685C3BE24DF}
+		{1BA4AB08-A52C-47D8-82DF-569A360042F8} = {3051EB45-8F19-4159-9E6E-1685C3BE24DF}
+		{8FFCB50F-50BA-4D0C-9276-DE72440DCBAB} = {3051EB45-8F19-4159-9E6E-1685C3BE24DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6398C58B-3DB9-4C4A-9E85-CEE7173F7B93}

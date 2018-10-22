@@ -4,11 +4,11 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
-namespace CollectMailTrigger
+namespace MailSchedulerFunction
 {
-    public static class CollectMailScheduler
+    public static class MailScheduler
     {
-        [FunctionName("CollectMailScheduler")]
+        [FunctionName("MailScheduler")]
         public static void Run([TimerTrigger("0/30 * * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Starting CollectMailScheduler function");

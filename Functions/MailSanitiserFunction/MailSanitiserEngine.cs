@@ -22,6 +22,12 @@ namespace MailSanitiserFunction
 
         public List<IMailSanitiserStrategy> SanitiserStrategies { get; private set; }
 
+        public string SanitiseForAllContentTypes(string content)
+        {
+            return Sanitise(content, SanitiseContentType.Html | SanitiseContentType.PlainText);
+
+        }
+
         public string Sanitise(string content, SanitiseContentType contentType)
         {
             if (SanitiserStrategies.Count == 0)
