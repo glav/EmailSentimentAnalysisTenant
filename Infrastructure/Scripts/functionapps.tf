@@ -109,7 +109,7 @@ output "blob_access_key" {
   value = "${azurerm_storage_account.EmailSentiment.secondary_access_key }"
 }
 
-output "blob_connection_string" {
+output "storage_connection_string" {
   value = "${azurerm_storage_account.EmailSentiment.secondary_connection_string}"
 }
 
