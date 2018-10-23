@@ -10,7 +10,7 @@ namespace MailSchedulerFunction
     public static class MailScheduler
     {
         [FunctionName("MailScheduler")]
-        public static void Run([TimerTrigger("0/30 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static void Run([TimerTrigger("0/15 * * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Starting CollectMailScheduler function");
             var coreDependencies = Dependencies.Setup(log);
@@ -22,8 +22,6 @@ namespace MailSchedulerFunction
             engine.ScheduleMailCollectionIfNotInProgress();
 
         }
-
-
     }
 
 }

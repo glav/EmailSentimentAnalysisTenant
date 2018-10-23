@@ -1,3 +1,6 @@
+locals {
+    sa_name = "emailsentimentsa${var.environment}"
+}
 resource "azurerm_application_insights" "EmailSentimentMetrics" {
   name                = "emailsentiment-appinsights-${var.environment}"
   location            = "${var.app_insights_location}"
@@ -6,11 +9,15 @@ resource "azurerm_application_insights" "EmailSentimentMetrics" {
 }
 
 resource "azurerm_storage_account" "EmailSentiment" {
-  name                     = "emailsentimentsa${var.environment}"
+  name                     = "${local.sa_name}"
   resource_group_name      = "${azurerm_resource_group.EmailSentiment.name}"
   location                 = "${var.location}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  tags {
+    environment = "${var.environment}"
+  }
 }
 
 resource "azurerm_app_service_plan" "EmailSentiment" {
@@ -50,6 +57,7 @@ resource "azurerm_function_app" "EmailSentimentCollectMailFuncApp" {
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
+    "WEBSITE_RUN_FROM_ZIP" = "1"
   }
 }
 
@@ -64,6 +72,7 @@ resource "azurerm_function_app" "EmailSentimentCleanMailFuncApp" {
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
+    "WEBSITE_RUN_FROM_ZIP" = "1"
   }
 }
 
@@ -78,6 +87,7 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
+    "WEBSITE_RUN_FROM_ZIP" = "1"
   }
 }
 
@@ -93,3 +103,17 @@ output "app_id" {
 output "id" {
   value = "${azurerm_application_insights.EmailSentimentMetrics.id}"
 }
+
+
+output "blob_access_key" {
+  value = "${azurerm_storage_account.EmailSentiment.secondary_access_key }"
+}
+
+output "blob_connection_string" {
+  value = "${azurerm_storage_account.EmailSentiment.secondary_connection_string}"
+}
+
+output "storage_account_name" {
+    value = "${local.sa_name}"
+}
+
