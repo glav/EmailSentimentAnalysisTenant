@@ -23,5 +23,6 @@ namespace StorageSetup
         }
 
         public static string ConnectionStringStorageAccount => "ConnectionStrings:StorageAccount".TryGetEnvironmentVariableElseUseConfig();
+        public static string TFConnectionString => "TF_STORAGE_CONNECTION_STRING".TryGetEnvironmentVariableElseUseConfig();
     }
 }

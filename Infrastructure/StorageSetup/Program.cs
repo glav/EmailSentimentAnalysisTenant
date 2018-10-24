@@ -24,6 +24,11 @@ namespace StorageSetup
             if (!CloudStorageAccount.TryParse(Config.ConnectionStringStorageAccount,out cloudAcct))
             {
                 Log.Logger.Error("Unable to parse connection string: {0}",Config.ConnectionStringStorageAccount);
+                if (!CloudStorageAccount.TryParse(Config.TFConnectionString, out cloudAcct))
+                {
+                    Log.Logger.Error("Unable to parse TF connection string: {0}", Config.TFConnectionString);
+                    return -1;
+                }
             }
 
             return CreateTables(cloudAcct).Result ? 0 : -1;
