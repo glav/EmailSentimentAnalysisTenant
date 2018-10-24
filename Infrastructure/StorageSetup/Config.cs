@@ -22,6 +22,6 @@ namespace StorageSetup
             Configuration = builder.Build();
         }
 
-        public static string ConnectionStringStorageAccount => Configuration["ConnectionStrings:StorageAccount"];
+        public static string ConnectionStringStorageAccount => "ConnectionStrings:StorageAccount".TryGetEnvironmentVariableElseUseConfig();
     }
 }
