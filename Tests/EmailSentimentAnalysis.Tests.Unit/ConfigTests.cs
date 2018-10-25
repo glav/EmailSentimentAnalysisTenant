@@ -9,15 +9,27 @@ namespace EmailSentimentAnalysis.Tests.Unit
 {
     public class ConfigTests
     {
-
+        private DependencyInstances _coreDependencies;
+        public ConfigTests()
+        {
+            _coreDependencies = Dependencies.Setup();
+        }
         [Fact]
         public void ShouldReadEnvironmentVariable()
         {
-            var coreDependencies = Dependencies.Setup();
-            var reader = new EnvironmentValueReader(coreDependencies.DiagnosticLogging);
+            var reader = new EnvironmentValueReader(_coreDependencies.DiagnosticLogging);
             var result = reader.GetEnvironmentValueThatIsNotEmpty(new string[] { "PATH", "path" });
 
             Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ShouldNotReadNonExistentEnvironmentVariable()
+        {
+            var reader = new EnvironmentValueReader(_coreDependencies.DiagnosticLogging);
+            var result = reader.GetEnvironmentValueThatIsNotEmpty(new string[] { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() });
+
+            Assert.Null(result);
         }
 
     }
