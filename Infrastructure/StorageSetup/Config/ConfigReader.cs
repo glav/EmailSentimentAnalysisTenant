@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StorageSetup
+namespace StorageSetup.Config
 {
-    public static class Config
+    public static class ConfigReader
     {
         public static IConfigurationRoot Configuration { get; set; }
 
-        static Config()
+        static ConfigReader()
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
@@ -22,7 +22,11 @@ namespace StorageSetup
             Configuration = builder.Build();
         }
 
-        public static string ConnectionStringStorageAccount => "ConnectionStrings:StorageAccount".TryGetEnvironmentVariableElseUseConfig();
-        public static string TFConnectionString => "TF_STORAGE_CONNECTION_STRING".TryGetEnvironmentVariableElseUseConfig();
+        public static string ConnectionStringStorageAccount
+            => new string[]{
+                "ConnectionStrings:StorageAccount",
+                "ConnectionStrings__StorageAccount",
+                "TF_STORAGE_CONNECTION_STRING"
+            }.TryGetEnvironmentVariableElseUseConfig();
     }
 }
