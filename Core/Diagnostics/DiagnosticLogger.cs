@@ -13,7 +13,7 @@ namespace EmailSentimentAnalysis.Core
         private readonly Microsoft.Extensions.Logging.ILogger _functionsLogger;
 
 
-        protected DiagnosticLogger(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger)
+        protected DiagnosticLogger(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger = null)
         {
             _appConfig = appConfig;
             _functionsLogger = functionsLogger;
@@ -21,7 +21,7 @@ namespace EmailSentimentAnalysis.Core
 
         private void Initialise()
         {
-            if (!_appConfig.IsHostedInAzure)
+            if (!_appConfig.IsHostedInAzure || _functionsLogger == null)
             {
                 _logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
