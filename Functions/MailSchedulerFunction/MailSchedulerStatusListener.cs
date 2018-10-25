@@ -11,14 +11,14 @@ namespace MailSchedulerFunction
     public static class MailSchedulerStatusListener
     {
         [FunctionName("MailSchedulerStatusListener")]
-        public static void Listener([QueueTrigger(QueueConfig.QueueNameProcessEmail)]string queueItem, ILogger log)
+        public static void Listener([QueueTrigger(FunctionConfig.QueueNameProcessEmail)]string queueItem, ILogger log)
         {
             log.LogInformation("Starting MailSchedulerStatusListener function");
-            var coreDependencies = Dependencies.Setup(log);
+            var coreDependencies = CoreDependencies.Setup(log);
 
             coreDependencies.DiagnosticLogging.Info($"MailSchedulerStatusListener received message at: {DateTime.UtcNow} UTC");
 
-            new DataSchedulerRepository().ClearMailOperationProgress();
+            new DataSchedulerRepository(coreDependencies).ClearMailOperationProgress();
 
         }
 

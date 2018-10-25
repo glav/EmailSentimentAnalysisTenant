@@ -6,14 +6,14 @@ using System.Text;
 
 namespace Core
 {
-    public static class Dependencies
+    public static class CoreDependencies
     {
-        public static DependencyInstances Setup(Microsoft.Extensions.Logging.ILogger functionsLogger = null)
+        public static CoreDependencyInstances Setup(Microsoft.Extensions.Logging.ILogger functionsLogger = null)
         {
             var config = new AppConfig();
             var diagLogger = DiagnosticLogger.CreateInstance(config, functionsLogger);
 
-            return new DependencyInstances
+            return new CoreDependencyInstances
                 (
                     config,
                     diagLogger,
@@ -22,9 +22,9 @@ namespace Core
         }
     }
 
-    public class DependencyInstances
+    public class CoreDependencyInstances
     {
-        public DependencyInstances(IAppConfig appConfiguration, IDiagnosticLogger diagnosticLogging, IEnvironmentValueReader envValueReader)
+        public CoreDependencyInstances(IAppConfig appConfiguration, IDiagnosticLogger diagnosticLogging, IEnvironmentValueReader envValueReader)
         {
             AppConfiguration = appConfiguration;
             DiagnosticLogging = diagnosticLogging;

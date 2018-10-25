@@ -12,7 +12,7 @@ namespace MailSanitiserFunction
         public static void Run([QueueTrigger("myqueue-items", Connection = "")]string myQueueItem, ILogger log)
         {
             log.LogInformation("Starting MailSanitiser function");
-            var dependencies = Dependencies.Setup(log);
+            var dependencies = CoreDependencies.Setup(log);
 
             dependencies.DiagnosticLogging.Info($"MailSanitiser Timer trigger function executed at: {DateTime.Now}");
         }

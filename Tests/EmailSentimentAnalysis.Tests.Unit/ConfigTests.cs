@@ -9,10 +9,10 @@ namespace EmailSentimentAnalysis.Tests.Unit
 {
     public class ConfigTests
     {
-        private DependencyInstances _coreDependencies;
+        private CoreDependencyInstances _coreDependencies;
         public ConfigTests()
         {
-            _coreDependencies = Dependencies.Setup();
+            _coreDependencies = CoreDependencies.Setup();
         }
         [Fact]
         public void ShouldReadEnvironmentVariable()

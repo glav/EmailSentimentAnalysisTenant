@@ -12,7 +12,7 @@ namespace MailProcessorFunction
         public static void Run([QueueTrigger("myqueue-items", Connection = "")]string myQueueItem, ILogger log)
         {
             log.LogInformation("Starting MailProcessor function");
-            var dependencies = Dependencies.Setup(log);
+            var dependencies = CoreDependencies.Setup(log);
 
             dependencies.DiagnosticLogging.Info($"MailProcessor Timer trigger function executed at: {DateTime.Now}");
         }

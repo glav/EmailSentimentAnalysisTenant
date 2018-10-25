@@ -7,10 +7,10 @@ namespace MailSchedulerFunction
 {
     public class SchedulingEngine
     {
-        private readonly Core.DependencyInstances _coreDependencies;
+        private readonly Core.CoreDependencyInstances _coreDependencies;
         private readonly IDataSchedulerRepository _repository;
 
-        public SchedulingEngine(Core.DependencyInstances coreDependencies, IDataSchedulerRepository repository)
+        public SchedulingEngine(Core.CoreDependencyInstances coreDependencies, IDataSchedulerRepository repository)
         {
             _coreDependencies = coreDependencies;
             _repository = repository;
@@ -23,9 +23,11 @@ namespace MailSchedulerFunction
             if (mailProcessingInProgress)
             {
                 _coreDependencies.DiagnosticLogging.Info("Mail processing currently in progress, skipping mail collection");
+                return;
             }
 
             _coreDependencies.DiagnosticLogging.Verbose("Mail processing not in progress, attempting to schedule mail collection");
+            //TODO: Lodge message to initiate mail collection
         }
     }
 }

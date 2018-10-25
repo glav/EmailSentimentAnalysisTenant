@@ -20,6 +20,7 @@ resource "azurerm_storage_account" "EmailSentiment" {
   }
 }
 
+
 resource "azurerm_app_service_plan" "EmailSentiment" {
   name                = "triggermail-service-plan-${var.environment}"
   resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"

@@ -6,36 +6,22 @@ resource "azurerm_resource_group" "EmailSentiment" {
   location = "${var.location}"
 }
 
-resource "azurerm_servicebus_namespace" "EmailSentimentSb" {
-  name                = "${local.servicebus_name}"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
-  sku                 = "standard"
-
-  tags {
-    source = "terraform"
-  }
+# Queues
+resource "azurerm_storage_queue" "EmailSentimentCollectMail" {
+  name                 = "${var.queue_collect_name}"
+  resource_group_name  = "${azurerm_resource_group.EmailSentiment.name}"
+  storage_account_name = "${azurerm_storage_account.EmailSentiment.name}"
 }
 
-# Service Bus
-resource "azurerm_servicebus_topic" "EmailSentimentCollectTopic" {
-  name                = "${var.servicebus_collect_topic_name}"
-  resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.EmailSentimentSb.name}"
-
-  enable_partitioning = true
+resource "azurerm_storage_queue" "EmailSentimentCleanMail" {
+  name                 = "${var.queue_clean_name}"
+  resource_group_name  = "${azurerm_resource_group.EmailSentiment.name}"
+  storage_account_name = "${azurerm_storage_account.EmailSentiment.name}"
 }
-resource "azurerm_servicebus_topic" "EmailSentimentCleanTopic" {
-  name                = "${var.servicebus_clean_topic_name}"
-  resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.EmailSentimentSb.name}"
 
-  enable_partitioning = true
+resource "azurerm_storage_queue" "EmailSentimentProcessMail" {
+  name                 = "${var.queue_process_name}"
+  resource_group_name  = "${azurerm_resource_group.EmailSentiment.name}"
+  storage_account_name = "${azurerm_storage_account.EmailSentiment.name}"
 }
-resource "azurerm_servicebus_topic" "EmailSentimentProcessTopic" {
-  name                = "${var.servicebus_process_topic_name}"
-  resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.EmailSentimentSb.name}"
 
-  enable_partitioning = true
-}

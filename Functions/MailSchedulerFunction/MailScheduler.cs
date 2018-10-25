@@ -13,12 +13,12 @@ namespace MailSchedulerFunction
         public static void Run([TimerTrigger("0/15 * * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Starting MailScheduler function");
-            var coreDependencies = Dependencies.Setup(log);
+            var coreDependencies = CoreDependencies.Setup(log);
 
             coreDependencies.DiagnosticLogging.Info($"MailScheduler Timer trigger function executed at: {DateTime.UtcNow} UTC");
 
             // Setup dependencies and invoke main processing component.
-            var engine = new SchedulingEngine(coreDependencies, new DataSchedulerRepository());
+            var engine = new SchedulingEngine(coreDependencies, new DataSchedulerRepository(coreDependencies));
             engine.ScheduleMailCollectionIfNotInProgress();
 
         }

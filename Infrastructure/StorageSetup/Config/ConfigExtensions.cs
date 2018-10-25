@@ -6,10 +6,10 @@ namespace StorageSetup.Config
 {
     public static class ConfigExtensions
     {
-        private static DependencyInstances _dependencyInstances;
+        private static CoreDependencyInstances _dependencyInstances;
         static ConfigExtensions()
         {
-            _dependencyInstances = Dependencies.Setup();
+            _dependencyInstances = CoreDependencies.Setup();
         }
         public static string TryGetEnvironmentVariableElseUseConfig(this string[] environmentVariables)
         {
