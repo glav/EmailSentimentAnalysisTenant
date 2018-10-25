@@ -43,6 +43,8 @@ resource "azurerm_function_app" "EmailSentimentTriggerMailFuncApp" {
   app_settings {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
+    "WEBSITE_RUN_FROM_ZIP" = "1"
+    "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
   }
 }
 
@@ -58,6 +60,7 @@ resource "azurerm_function_app" "EmailSentimentCollectMailFuncApp" {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
     "WEBSITE_RUN_FROM_ZIP" = "1"
+    "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
   }
 }
 
@@ -73,6 +76,7 @@ resource "azurerm_function_app" "EmailSentimentCleanMailFuncApp" {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
     "WEBSITE_RUN_FROM_ZIP" = "1"
+    "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
   }
 }
 
@@ -88,6 +92,7 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
     "WEBSITE_RUN_FROM_ZIP" = "1"
+    "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
   }
 }
 
