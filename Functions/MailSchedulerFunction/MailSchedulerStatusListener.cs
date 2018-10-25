@@ -14,6 +14,12 @@ namespace MailSchedulerFunction
         public static void Listener([QueueTrigger(QueueConfig.QueueNameProcessEmail)]string queueItem, ILogger log)
         {
             log.LogInformation("Starting MailSchedulerStatusListener function");
+            var coreDependencies = Dependencies.Setup(log);
+
+            coreDependencies.DiagnosticLogging.Info($"MailSchedulerStatusListener received message at: {DateTime.UtcNow} UTC");
+
+            new DataSchedulerRepository().ClearMailOperationProgress();
+
         }
 
 
