@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailSchedulerFunction.Data
 {
     public interface IDataSchedulerRepository
     {
-        bool IsMailOperationInProgress();
-        void SetMailOperationToInProgress();
-        void ClearMailOperationProgress();
+        Task<bool> IsMailOperationInProgressAsync();
+        Task SetMailOperationToInProgressAsync();
+        Task ClearMailOperationProgressAsync();
     }
 }

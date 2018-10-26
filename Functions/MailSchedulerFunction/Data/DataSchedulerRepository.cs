@@ -2,10 +2,12 @@
 using Core;
 using Core.Config;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailSchedulerFunction.Data
 {
@@ -17,13 +19,13 @@ namespace MailSchedulerFunction.Data
         {
             _dependencies = dependencies;
         }
-        public void ClearMailOperationProgress()
+        public async Task ClearMailOperationProgressAsync()
         {
             try
             {
                 var tblRef = CreateClientTableReference();
                 var op = TableOperation.Delete(new MailSchedulerEntity());
-                var result = tblRef.ExecuteAsync(op).Result;
+                var result = await tblRef.ExecuteAsync(op);
             }
             catch (Exception ex)
             {
@@ -31,15 +33,15 @@ namespace MailSchedulerFunction.Data
             }
         }
 
-        public bool IsMailOperationInProgress()
+        public async Task<bool> IsMailOperationInProgressAsync()
         {
             _dependencies.DiagnosticLogging.Info("IsMailOperationInprogress");
             var tblRef = CreateClientTableReference();
             try
             {
                 var op = TableOperation.Retrieve(FunctionConfig.TablePartitionKey, FunctionConfig.TableRowKey);
-                var result = tblRef.ExecuteAsync(op).Result;
-                return result != null;
+                var result = await tblRef.ExecuteAsync(op);
+                return result != null && result.HttpStatusCode < 300;
             } catch (Exception ex)
             {
                 _dependencies.DiagnosticLogging.Error(ex, "Error checking if Mail Operation in progress");
@@ -47,13 +49,20 @@ namespace MailSchedulerFunction.Data
             return false;
         }
 
-        public void SetMailOperationToInProgress()
+        public async Task SetMailOperationToInProgressAsync()
         {
+            var acct = CreateStorageAccountReference();
+            var queueClient = acct.CreateCloudQueueClient();
+            var queueRef = queueClient.GetQueueReference(FunctionConfig.QueueNameCollectEmail);
+
             try
             {
+                queueRef.AddMessageAsync(new CloudQueueMessage(DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss"))).Wait();
+                _dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
+
                 var tblRef = CreateClientTableReference();
                 var op = TableOperation.Insert(new MailSchedulerEntity());
-                var result = tblRef.ExecuteAsync(op).Result;
+                var result = await tblRef.ExecuteAsync(op);
             } catch (Exception ex)
             {
                 _dependencies.DiagnosticLogging.Error(ex, "Error setting mail operation progress");
@@ -61,6 +70,13 @@ namespace MailSchedulerFunction.Data
         }
 
         private CloudTable CreateClientTableReference()
+        {
+            var acct = CreateStorageAccountReference();
+            var client = acct.CreateCloudTableClient();
+            return client.GetTableReference(FunctionConfig.TableNameCollectMail);
+
+        }
+        private CloudStorageAccount CreateStorageAccountReference()
         {
             CloudStorageAccount cloudAcct;
             var connString = _dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { ConfigKeys.StorageConnectionString });
@@ -70,8 +86,8 @@ namespace MailSchedulerFunction.Data
                 _dependencies.DiagnosticLogging.Fatal("Unable to parse connection string: {0}", connString);
                 throw new Exception($"Unable to parse connection string: {connString}");
             }
-            var client = cloudAcct.CreateCloudTableClient();
-            return client.GetTableReference(FunctionConfig.TableNameCollectMail);
+
+            return cloudAcct;
 
         }
     }

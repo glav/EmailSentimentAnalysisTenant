@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Core;
 using MailSchedulerFunction.Data;
 using Microsoft.Azure.WebJobs;
@@ -10,7 +11,7 @@ namespace MailSchedulerFunction
     public static class MailScheduler
     {
         [FunctionName("MailScheduler")]
-        public static void Run([TimerTrigger("0/15 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0/15 * * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Starting MailScheduler function");
             var coreDependencies = CoreDependencies.Setup(log);
@@ -19,7 +20,7 @@ namespace MailSchedulerFunction
 
             // Setup dependencies and invoke main processing component.
             var engine = new SchedulingEngine(coreDependencies, new DataSchedulerRepository(coreDependencies));
-            engine.ScheduleMailCollectionIfNotInProgress();
+            await engine.ScheduleMailCollectionIfNotInProgressAsync();
 
         }
     }
