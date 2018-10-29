@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Core;
 using MailCollectorFunction.Config;
+using MailCollectorFunction.Data;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,8 @@ namespace MailCollectorFunction
             var dependencies = CoreDependencies.Setup(log);
 
             dependencies.DiagnosticLogging.Info($"MailCollector Queue trigger function executed at: {DateTime.UtcNow}");
+
+            var engine = new CollectionEngine(dependencies,new MailCollectionRepository(dependencies));
 
         }
     }

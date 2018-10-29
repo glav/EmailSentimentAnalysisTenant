@@ -15,7 +15,7 @@ namespace Core.Config
             _logger = logger;
         }
 
-        public string GetEnvironmentValueThatIsNotEmpty(string[] environmentVariables)
+        public string GetEnvironmentValueThatIsNotEmpty(string[] environmentVariables, string defaultValue = null)
         {
             if (environmentVariables == null || environmentVariables.Length == 0)
             {
@@ -33,7 +33,7 @@ namespace Core.Config
                 _logger.Info("Environment setting for: {0} not present", ev);
             }
             _logger.Info("No Environment settings found for: {0}", environmentVariables);
-            return null;
+            return defaultValue;
         }
 
     }

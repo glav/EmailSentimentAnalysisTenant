@@ -2,6 +2,6 @@
 {
     public interface IEnvironmentValueReader
     {
-        string GetEnvironmentValueThatIsNotEmpty(string[] environmentVariables);
+        string GetEnvironmentValueThatIsNotEmpty(string[] environmentVariables, string defaultValue = null);
     }
 }

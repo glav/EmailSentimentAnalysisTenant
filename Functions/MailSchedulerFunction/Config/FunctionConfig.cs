@@ -4,7 +4,7 @@ namespace CollectMailScheduler.Config
     {
         public const string QueueNameCollectEmail = "collectemail";
         public const string QueueNameProcessEmail = "processemail";
-        public const string TableNameCollectMail = "EmailSentimentCollectMail";
+        public const string TableNameMailSchedulerStatus = "EmailSentimentMailSchedulerStatus";
         public const string TablePartitionKey = "MailSchedulerPartitionKey";
         public const string TableRowKey = "MailScheduler";
     }

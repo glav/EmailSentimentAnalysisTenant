@@ -57,7 +57,7 @@ namespace MailSchedulerFunction.Data
 
             try
             {
-                queueRef.AddMessageAsync(new CloudQueueMessage(DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss"))).Wait();
+                await queueRef.AddMessageAsync(new CloudQueueMessage(DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss")));
                 _dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
 
                 var tblRef = CreateClientTableReference();
@@ -73,7 +73,7 @@ namespace MailSchedulerFunction.Data
         {
             var acct = CreateStorageAccountReference();
             var client = acct.CreateCloudTableClient();
-            return client.GetTableReference(FunctionConfig.TableNameCollectMail);
+            return client.GetTableReference(FunctionConfig.TableNameMailSchedulerStatus);
 
         }
         private CloudStorageAccount CreateStorageAccountReference()
