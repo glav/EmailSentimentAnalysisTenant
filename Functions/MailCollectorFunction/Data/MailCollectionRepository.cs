@@ -11,30 +11,28 @@ using System.Threading.Tasks;
 using MailKit.Net.Pop3;
 using System.Linq;
 using MimeKit;
+using Core.Data;
 
 namespace MailCollectorFunction.Data
 {
-    class MailCollectionRepository : IMailCollectionRepository
+    class MailCollectionRepository : BaseCloudStorageRepository, IMailCollectionRepository
     {
-        private readonly CoreDependencyInstances _dependencies;
-
-        public MailCollectionRepository(CoreDependencyInstances dependencies)
+        public MailCollectionRepository(CoreDependencyInstances dependencies) : base(dependencies)
         {
-            _dependencies = dependencies;
         }
         public async Task StoreMailAsync(List<RawMailMessageEntity> mailList)
         {
 
             if (mailList == null || mailList.Count == 0)
             {
-                _dependencies.DiagnosticLogging.Info("No email to store, exiting.");
+                Dependencies.DiagnosticLogging.Info("No email to store, exiting.");
                 return;
             }
             try
             {
-                _dependencies.DiagnosticLogging.Info("{0} mail messages to store.",mailList.Count);
+                Dependencies.DiagnosticLogging.Info("{0} mail messages to store.",mailList.Count);
 
-                var tblRef = CreateClientTableReference();
+                var tblRef = CreateClientTableReference(FunctionConfig.TableNameCollectMail);
 
                 foreach (var m in mailList)
                 {
@@ -42,14 +40,14 @@ namespace MailCollectorFunction.Data
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
                     {
-                        _dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {0}", m);
+                        Dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {0}", m);
                     }
                 }
-                _dependencies.DiagnosticLogging.Info("{0} mail messages stored.", mailList.Count);
+                Dependencies.DiagnosticLogging.Info("{0} mail messages stored.", mailList.Count);
             }
             catch (Exception ex)
             {
-                _dependencies.DiagnosticLogging.Error(ex, "Error sending mail list to queue ");
+                Dependencies.DiagnosticLogging.Error(ex, "Error sending mail list to queue ");
             }
         }
 
@@ -58,18 +56,18 @@ namespace MailCollectorFunction.Data
             return Task.Run<List<RawMailMessageEntity>>(() =>
             {
                 var emails = new List<RawMailMessageEntity>();
-                _dependencies.DiagnosticLogging.Info("Attempting to collect a maximum of {0} emails", maxCount);
+                Dependencies.DiagnosticLogging.Info("Attempting to collect a maximum of {0} emails", maxCount);
 
                 try
                 {
                     using (var emailClient = new Pop3Client())
                     {
-                        _dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}, Port:{1}", emailConfig.PopServerHost, emailConfig.PopServerPort);
+                        Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}, Port:{1}", emailConfig.PopServerHost, emailConfig.PopServerPort);
                         emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, true);
 
                         emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                        _dependencies.DiagnosticLogging.Info("Authenticating to email server");
+                        Dependencies.DiagnosticLogging.Info("Authenticating to email server");
 
                         emailClient.Authenticate(emailConfig.Username, emailConfig.Password);
 
@@ -85,39 +83,17 @@ namespace MailCollectorFunction.Data
                             emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
                         }
 
-                        _dependencies.DiagnosticLogging.Info("Collected a {0} emails from server.", emails.Count);
+                        Dependencies.DiagnosticLogging.Info("Collected a {0} emails from server.", emails.Count);
 
                         return emails;
                     }
                 } catch (Exception ex)
                 {
-                    _dependencies.DiagnosticLogging.Fatal(ex, "Error attempting to collect mail");
+                    Dependencies.DiagnosticLogging.Fatal(ex, "Error attempting to collect mail");
                     return emails;
                 }
             });
         }
 
-        private CloudTable CreateClientTableReference()
-        {
-            var acct = CreateStorageAccountReference();
-            var client = acct.CreateCloudTableClient();
-            return client.GetTableReference(FunctionConfig.TableNameCollectMail);
-
-        }
-
-        private CloudStorageAccount CreateStorageAccountReference()
-        {
-            CloudStorageAccount cloudAcct;
-            var connString = _dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { ConfigKeys.StorageConnectionString });
-
-            if (!CloudStorageAccount.TryParse(connString, out cloudAcct))
-            {
-                _dependencies.DiagnosticLogging.Fatal("Unable to parse connection string: {0}", connString);
-                throw new Exception($"Unable to parse connection string: {connString}");
-            }
-
-            return cloudAcct;
-
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CollectMailScheduler.Config;
 using Core;
 using Core.Config;
+using Core.Data;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -11,32 +12,29 @@ using System.Threading.Tasks;
 
 namespace MailSchedulerFunction.Data
 {
-    class DataSchedulerRepository : IDataSchedulerRepository
+    class DataSchedulerRepository : BaseCloudStorageRepository, IDataSchedulerRepository
     {
-        private readonly CoreDependencyInstances _dependencies;
-
-        public DataSchedulerRepository(CoreDependencyInstances dependencies)
+        public DataSchedulerRepository(CoreDependencyInstances dependencies) : base(dependencies)
         {
-            _dependencies = dependencies;
         }
         public async Task ClearMailOperationProgressAsync()
         {
             try
             {
-                var tblRef = CreateClientTableReference();
+                var tblRef = CreateClientTableReference(FunctionConfig.TableNameMailSchedulerStatus);
                 var op = TableOperation.Delete(new MailSchedulerEntity());
                 var result = await tblRef.ExecuteAsync(op);
             }
             catch (Exception ex)
             {
-                _dependencies.DiagnosticLogging.Error(ex, "Error clearing mail operation progress");
+                Dependencies.DiagnosticLogging.Error(ex, "Error clearing mail operation progress");
             }
         }
 
         public async Task<bool> IsMailOperationInProgressAsync()
         {
-            _dependencies.DiagnosticLogging.Info("IsMailOperationInprogress");
-            var tblRef = CreateClientTableReference();
+            Dependencies.DiagnosticLogging.Info("IsMailOperationInprogress");
+            var tblRef = CreateClientTableReference(FunctionConfig.TableNameMailSchedulerStatus);
             try
             {
                 var op = TableOperation.Retrieve(FunctionConfig.TablePartitionKey, FunctionConfig.TableRowKey);
@@ -44,7 +42,7 @@ namespace MailSchedulerFunction.Data
                 return result != null && result.HttpStatusCode < 300;
             } catch (Exception ex)
             {
-                _dependencies.DiagnosticLogging.Error(ex, "Error checking if Mail Operation in progress");
+                Dependencies.DiagnosticLogging.Error(ex, "Error checking if Mail Operation in progress");
             }
             return false;
         }
@@ -58,37 +56,16 @@ namespace MailSchedulerFunction.Data
             try
             {
                 await queueRef.AddMessageAsync(new CloudQueueMessage(DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss")));
-                _dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
+                Dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
 
-                var tblRef = CreateClientTableReference();
+                var tblRef = CreateClientTableReference(FunctionConfig.TableNameMailSchedulerStatus);
                 var op = TableOperation.Insert(new MailSchedulerEntity());
                 var result = await tblRef.ExecuteAsync(op);
             } catch (Exception ex)
             {
-                _dependencies.DiagnosticLogging.Error(ex, "Error setting mail operation progress");
+                Dependencies.DiagnosticLogging.Error(ex, "Error setting mail operation progress");
             }
         }
 
-        private CloudTable CreateClientTableReference()
-        {
-            var acct = CreateStorageAccountReference();
-            var client = acct.CreateCloudTableClient();
-            return client.GetTableReference(FunctionConfig.TableNameMailSchedulerStatus);
-
-        }
-        private CloudStorageAccount CreateStorageAccountReference()
-        {
-            CloudStorageAccount cloudAcct;
-            var connString = _dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { ConfigKeys.StorageConnectionString });
-
-            if (!CloudStorageAccount.TryParse(connString, out cloudAcct))
-            {
-                _dependencies.DiagnosticLogging.Fatal("Unable to parse connection string: {0}", connString);
-                throw new Exception($"Unable to parse connection string: {connString}");
-            }
-
-            return cloudAcct;
-
-        }
     }
 }

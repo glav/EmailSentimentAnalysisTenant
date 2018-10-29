@@ -19,7 +19,9 @@ namespace MailCollectorFunction
 
             dependencies.DiagnosticLogging.Info($"MailCollector Queue trigger function executed at: {DateTime.UtcNow}");
 
-            var engine = new CollectionEngine(dependencies,new MailCollectionRepository(dependencies));
+            var mailConfig = EmailConfiguration.PopulateConfigFromEnviromentVariables(dependencies);
+            var engine = new CollectionEngine(dependencies,new MailCollectionRepository(dependencies), mailConfig);
+            await engine.PerformMailCollectionAsync();
 
         }
     }
