@@ -1,13 +1,9 @@
 ﻿using CollectMailScheduler.Config;
 using Core;
-using Core.Config;
 using Core.Data;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MailSchedulerFunction.Data
