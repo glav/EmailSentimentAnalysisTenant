@@ -13,6 +13,10 @@ variable "app" {
   default = "EmailSentiment"
 }
 
+variable "queue_trigger_name" {
+  default="triggeremail"
+}
+
 variable "queue_collect_name" {
   default="collectemail"
 }

@@ -4,7 +4,6 @@ namespace MailCollectorFunction.Config
     {
         public const string QueueNameCollectEmail = "collectemail";
         public const string QueueNameCleanEmail = "cleanemail";
-        public const string QueueNameProcessEmail = "processemail";
 
         public const string TableNameCollectMail = "EmailSentimentCollectMail";
 
