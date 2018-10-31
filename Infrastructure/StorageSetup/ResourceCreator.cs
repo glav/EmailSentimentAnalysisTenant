@@ -9,7 +9,7 @@ namespace StorageSetup
     {
         public async Task<bool> CreateTables(CloudStorageAccount cloudAcct)
         {
-            string[] tables = { "EmailSentimentMailSchedulerStatus","EmailSentimentCollectMail" };
+            string[] tables = { "EmailSentimentMailSchedulerStatus","EmailSentimentCollectMail", "EmailSentimentSanitisedMail" };
             var client = cloudAcct.CreateCloudTableClient();
 
             try
