@@ -51,7 +51,7 @@ namespace MailSchedulerFunction.Data
 
             try
             {
-                await queueRef.AddMessageAsync(new CloudQueueMessage(DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss")));
+                await queueRef.AddMessageAsync(GenericActionMessage.CreateNewQueueMessage());
                 Dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
 
                 var tblRef = CreateClientTableReference(FunctionConstants.TableNameMailSchedulerStatus);

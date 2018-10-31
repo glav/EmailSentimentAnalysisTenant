@@ -19,10 +19,14 @@ namespace MailCollectorFunction.Config
             var envReader = new EnvironmentValueReader(dependencies.DiagnosticLogging);
 
 
-            mailConfig.PopServerHost = envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname"}, "pop.gmail.com");
-            mailConfig.PopServerPort = Convert.ToInt32(envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995"));
-            mailConfig.Username = envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusername" });
-            mailConfig.Password = envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailpassword" });
+            mailConfig.PopServerHost = 
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname"}, "pop.gmail.com");
+            mailConfig.PopServerPort = 
+                Convert.ToInt32(envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995"));
+            mailConfig.Username = 
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusername" });
+            mailConfig.Password = 
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailpassword" });
             return mailConfig;
         }
     }

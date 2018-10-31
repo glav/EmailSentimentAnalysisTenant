@@ -1,12 +1,9 @@
 ﻿using MailCollectorFunction.Config;
 using Core;
-using Core.Config;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using MailKit.Net.Pop3;
 using System.Linq;
@@ -93,6 +90,15 @@ namespace MailCollectorFunction.Data
                     return emails;
                 }
             });
+        }
+
+        public async Task LodgeMailCollectedAcknowledgementAsync(GenericActionMessage receivedMessage)
+        {
+            var acct = CreateStorageAccountReference();
+            var queueClient = acct.CreateCloudQueueClient();
+            var queueRef = queueClient.GetQueueReference(FunctionConstants.QueueNameCleanEmail);
+            var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
+            await queueRef.AddMessageAsync(msg);
         }
 
     }

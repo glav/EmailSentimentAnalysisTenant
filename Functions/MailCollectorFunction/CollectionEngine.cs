@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Data;
 using MailCollectorFunction.Config;
 using MailCollectorFunction.Data;
 using System;
@@ -20,11 +21,28 @@ namespace MailCollectorFunction
             _mailConfig = mailConfig;
         }
 
-        public async Task PerformMailCollectionAsync()
+        public async Task PerformMailCollectionAsync(GenericActionMessage receivedMessage)
         {
-            var emails = await _repository.CollectMailAsync(_mailConfig);
-            await _repository.StoreMailAsync(emails);
-            //TODO: Send message that collection is complete
+            _coreDependencies.DiagnosticLogging.Info("Performing Mail Collection:{0}", receivedMessage);
+
+            try
+            {
+                var emails = await _repository.CollectMailAsync(_mailConfig);
+                await _repository.StoreMailAsync(emails);
+            } catch (Exception ex)
+            {
+                _coreDependencies.DiagnosticLogging.Fatal(ex, "Error performing mail collection");
+            }
+
+            try
+            {
+                await _repository.LodgeMailCollectedAcknowledgementAsync(receivedMessage);
+                _coreDependencies.DiagnosticLogging.Info("Completed performing mail collection");
+            } catch (Exception ex)
+            {
+                _coreDependencies.DiagnosticLogging.Fatal(ex, "Could not Lodge mail collection acknowledgement. Manual intervention required");
+            }
+
             return;
         }
     }

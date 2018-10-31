@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Core;
+using Core.Data;
 using MailCollectorFunction.Config;
 using MailCollectorFunction.Data;
 using Microsoft.Azure.WebJobs;
@@ -21,7 +22,9 @@ namespace MailCollectorFunction
 
             var mailConfig = EmailConfiguration.PopulateConfigFromEnviromentVariables(dependencies);
             var engine = new CollectionEngine(dependencies,new MailCollectionRepository(dependencies), mailConfig);
-            await engine.PerformMailCollectionAsync();
+
+            var queueMsg = GenericActionMessage.FromString(myQueueItem);
+            await engine.PerformMailCollectionAsync(queueMsg);
 
         }
     }
