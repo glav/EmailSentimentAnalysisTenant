@@ -12,7 +12,7 @@ namespace MailSchedulerFunction
     public static class MailSchedulerStatusListener
     {
         [FunctionName("MailSchedulerStatusListener")]
-        public static async Task Listener([QueueTrigger(FunctionConfig.QueueNameTriggerEmail)]string queueItem, ILogger log)
+        public static async Task Listener([QueueTrigger(FunctionConstants.QueueNameTriggerEmail)]string queueItem, ILogger log)
         {
             log.LogInformation("Starting MailSchedulerStatusListener function");
             var coreDependencies = CoreDependencies.Setup(log);

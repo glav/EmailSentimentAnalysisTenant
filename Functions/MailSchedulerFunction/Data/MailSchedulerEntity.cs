@@ -10,8 +10,8 @@ namespace MailSchedulerFunction.Data
     {
         public MailSchedulerEntity()
         {
-            PartitionKey = FunctionConfig.TablePartitionKey;
-            RowKey = FunctionConfig.TableRowKey;
+            PartitionKey = FunctionConstants.TablePartitionKey;
+            RowKey = FunctionConstants.TableRowKey;
             TimeOfActionUtc = DateTime.UtcNow;
         }
         public DateTime TimeOfActionUtc { get; set; }

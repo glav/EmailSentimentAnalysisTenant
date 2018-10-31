@@ -1,27 +1,31 @@
-using System;
 using Core.Config;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.ILogger;
+using System;
 
 namespace EmailSentimentAnalysis.Core
 {
     public class DiagnosticLogger : IDiagnosticLogger
     {
         private ILogger _logger;
-        private readonly IAppConfig _appConfig;
         private readonly Microsoft.Extensions.Logging.ILogger _functionsLogger;
 
 
-        protected DiagnosticLogger(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger = null)
+        protected DiagnosticLogger(Microsoft.Extensions.Logging.ILogger functionsLogger = null)
         {
-            _appConfig = appConfig;
             _functionsLogger = functionsLogger;
         }
 
+        public bool IsHostedInAzure()
+        {
+            return !string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME", EnvironmentVariableTarget.Process));
+        }
+
+
         private void Initialise()
         {
-            if (!_appConfig.IsHostedInAzure || _functionsLogger == null)
+            if (!IsHostedInAzure() || _functionsLogger == null)
             {
                 _logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
@@ -44,9 +48,9 @@ namespace EmailSentimentAnalysis.Core
             Log.Logger = _logger;
         }
 
-        public static DiagnosticLogger CreateInstance(IAppConfig appConfig, Microsoft.Extensions.Logging.ILogger functionsLogger)
+        public static DiagnosticLogger CreateInstance(Microsoft.Extensions.Logging.ILogger functionsLogger)
         {
-            var diagLogger = new DiagnosticLogger(appConfig, functionsLogger);
+            var diagLogger = new DiagnosticLogger(functionsLogger);
             diagLogger.Initialise();
             return diagLogger;
         }

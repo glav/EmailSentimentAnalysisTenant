@@ -1,6 +1,6 @@
 namespace CollectMailScheduler.Config
 {
-    public static class FunctionConfig
+    public static class FunctionConstants
     {
         public const string QueueNameCollectEmail = "collectemail";
         public const string QueueNameTriggerEmail = "triggeremail";

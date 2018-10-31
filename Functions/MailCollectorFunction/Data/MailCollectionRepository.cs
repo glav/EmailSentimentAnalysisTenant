@@ -32,7 +32,7 @@ namespace MailCollectorFunction.Data
             {
                 Dependencies.DiagnosticLogging.Info("{0} mail messages to store.",mailList.Count);
 
-                var tblRef = CreateClientTableReference(FunctionConfig.TableNameCollectMail);
+                var tblRef = CreateClientTableReference(FunctionConstants.TableNameCollectMail);
 
                 foreach (var m in mailList)
                 {

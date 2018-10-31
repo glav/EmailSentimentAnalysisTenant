@@ -1,6 +1,6 @@
 namespace MailCollectorFunction.Config
 {
-    public static class FunctionConfig
+    public static class FunctionConstants
     {
         public const string QueueNameCollectEmail = "collectemail";
         public const string QueueNameCleanEmail = "cleanemail";
