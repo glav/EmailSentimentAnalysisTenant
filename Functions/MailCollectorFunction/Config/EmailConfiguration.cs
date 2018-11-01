@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Config;
+using Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,7 @@ namespace MailCollectorFunction.Config
         public int PopServerPort { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public bool UseSsl { get; set; }
 
         public static EmailConfiguration PopulateConfigFromEnviromentVariables(CoreDependencyInstances dependencies)
         {
@@ -21,12 +23,14 @@ namespace MailCollectorFunction.Config
 
             mailConfig.PopServerHost = 
                 envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname"}, "pop.gmail.com");
-            mailConfig.PopServerPort = 
-                Convert.ToInt32(envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995"));
+            mailConfig.PopServerPort =
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995").ToInt();
             mailConfig.Username = 
                 envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusername" });
             mailConfig.Password = 
                 envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailpassword" });
+            mailConfig.UseSsl =
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusessl" }).ToBool();
             return mailConfig;
         }
     }

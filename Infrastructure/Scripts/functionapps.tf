@@ -62,6 +62,11 @@ resource "azurerm_function_app" "EmailSentimentCollectMailFuncApp" {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
     "WEBSITE_RUN_FROM_ZIP" = "1"
     "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
+    "popemailhostname" = "${var.pop_mail_host}"
+    "popemailport" = "${var.pop_mail_port}"
+    "popemailusername" = "${var.pop_mail_username}"
+    "popemailpassword"= "${var.pop_mail_password}"
+    "popemailusessl" = "${var.pop_mail_use_ssl}"
   }
 }
 

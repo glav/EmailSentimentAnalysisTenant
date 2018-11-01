@@ -29,6 +29,26 @@ variable "queue_process_name" {
   default="processemail"
 }
 
+variable "pop_mail_host" {
+  default="pop.gmail.com"
+}
+
+variable "pop_mail_port" {
+  default="995"
+}
+
+variable "pop_mail_username" {
+  default="popusername"
+}
+
+variable "pop_mail_password" {
+  default="{ENTER-YOUR-PASSWORD}"
+}
+
+variable "pop_mail_use_ssl" {
+  default="true"
+}
+
 locals {
   queue_name = "${var.app}${var.environment}"
   resource_group_name = "${var.app}${var.environment}"
