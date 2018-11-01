@@ -1,4 +1,6 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using Core.Data;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using Serilog;
 using System;
 using System.Threading.Tasks;
@@ -7,14 +9,32 @@ namespace StorageSetup
 {
     public class ResourceCreator
     {
-        public async Task<bool> CreateTables(CloudStorageAccount cloudAcct)
+        public ResourceCreator(string connectionString)
         {
-            string[] tables = { "EmailSentimentMailSchedulerStatus","EmailSentimentCollectMail", "EmailSentimentSanitisedMail" };
-            var client = cloudAcct.CreateCloudTableClient();
+            ConnectionString = connectionString;
+        }
+
+        public string ConnectionString { get; private set; }
+        private CloudTableClient CreateTableClient()
+        {
+            CloudStorageAccount cloudAcct;
+
+            if (!CloudStorageAccount.TryParse(ConnectionString, out cloudAcct))
+            {
+                Log.Logger.Error("Unable to parse connection string: {0}", ConnectionString);
+                return null;
+            }
+
+            return cloudAcct.CreateCloudTableClient();
+
+        }
+        public async Task<bool> CreateTables()
+        {
+            var client = CreateTableClient();
 
             try
             {
-                foreach (var tblName in tables)
+                foreach (var tblName in DataStores.Tables.FullTableList)
                 {
 
                     var tblRef = client.GetTableReference(tblName);

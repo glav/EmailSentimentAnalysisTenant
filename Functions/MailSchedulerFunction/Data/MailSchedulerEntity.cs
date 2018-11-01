@@ -1,4 +1,4 @@
-﻿using CollectMailScheduler.Config;
+﻿using Core.Data;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace MailSchedulerFunction.Data
     {
         public MailSchedulerEntity()
         {
-            PartitionKey = FunctionConstants.TablePartitionKey;
-            RowKey = FunctionConstants.TableRowKey;
+            PartitionKey = DataStores.Tables.SchedulerTablePartitionKey;
+            RowKey = DataStores.Tables.SchedulerTableRowKey;
             TimeOfActionUtc = DateTime.UtcNow;
         }
         public DateTime TimeOfActionUtc { get; set; }

@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using CollectMailScheduler.Config;
 using Core;
+using Core.Data;
 using MailSchedulerFunction.Data;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
 namespace MailSchedulerFunction
@@ -12,7 +11,7 @@ namespace MailSchedulerFunction
     public static class MailSchedulerStatusListener
     {
         [FunctionName("MailSchedulerStatusListener")]
-        public static async Task Listener([QueueTrigger(FunctionConstants.QueueNameTriggerEmail)]string queueItem, ILogger log)
+        public static async Task Listener([QueueTrigger(DataStores.Queues.QueueNameTriggerEmail)]string queueItem, ILogger log)
         {
             log.LogInformation("Starting MailSchedulerStatusListener function");
             var coreDependencies = CoreDependencies.Setup(log);

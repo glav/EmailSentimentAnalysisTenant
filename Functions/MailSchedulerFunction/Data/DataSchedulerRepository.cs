@@ -1,7 +1,5 @@
-﻿using CollectMailScheduler.Config;
-using Core;
+﻿using Core;
 using Core.Data;
-using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Threading.Tasks;
@@ -17,7 +15,7 @@ namespace MailSchedulerFunction.Data
         {
             try
             {
-                var tblRef = CreateClientTableReference(FunctionConstants.TableNameMailSchedulerStatus);
+                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
                 var op = TableOperation.Delete(new MailSchedulerEntity());
                 var result = await tblRef.ExecuteAsync(op);
             }
@@ -30,10 +28,10 @@ namespace MailSchedulerFunction.Data
         public async Task<bool> IsMailOperationInProgressAsync()
         {
             Dependencies.DiagnosticLogging.Info("IsMailOperationInprogress");
-            var tblRef = CreateClientTableReference(FunctionConstants.TableNameMailSchedulerStatus);
+            var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
             try
             {
-                var op = TableOperation.Retrieve(FunctionConstants.TablePartitionKey, FunctionConstants.TableRowKey);
+                var op = TableOperation.Retrieve(DataStores.Tables.SchedulerTablePartitionKey, DataStores.Tables.SchedulerTableRowKey);
                 var result = await tblRef.ExecuteAsync(op);
                 return result != null && result.HttpStatusCode < 300;
             } catch (Exception ex)
@@ -47,14 +45,14 @@ namespace MailSchedulerFunction.Data
         {
             var acct = CreateStorageAccountReference();
             var queueClient = acct.CreateCloudQueueClient();
-            var queueRef = queueClient.GetQueueReference(FunctionConstants.QueueNameCollectEmail);
+            var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameCollectEmail);
 
             try
             {
                 await queueRef.AddMessageAsync(GenericActionMessage.CreateNewQueueMessage());
                 Dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
 
-                var tblRef = CreateClientTableReference(FunctionConstants.TableNameMailSchedulerStatus);
+                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
                 var op = TableOperation.Insert(new MailSchedulerEntity());
                 var result = await tblRef.ExecuteAsync(op);
             } catch (Exception ex)

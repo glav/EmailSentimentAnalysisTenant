@@ -13,7 +13,7 @@ namespace MailCollectorFunction
     public static class MailCollector
     {
         [FunctionName("MailCollector")]
-        public static async Task Run([QueueTrigger(FunctionConstants.QueueNameCollectEmail)]string myQueueItem, ILogger log)
+        public static async Task Run([QueueTrigger(DataStores.Queues.QueueNameCollectEmail)]string myQueueItem, ILogger log)
         {
             log.LogInformation("Starting MailCollector function");
             var dependencies = CoreDependencies.Setup(log);

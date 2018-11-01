@@ -29,7 +29,7 @@ namespace MailCollectorFunction.Data
             {
                 Dependencies.DiagnosticLogging.Info("{0} mail messages to store.",mailList.Count);
 
-                var tblRef = CreateClientTableReference(FunctionConstants.TableNameCollectMail);
+                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
 
                 foreach (var m in mailList)
                 {
@@ -96,7 +96,7 @@ namespace MailCollectorFunction.Data
         {
             var acct = CreateStorageAccountReference();
             var queueClient = acct.CreateCloudQueueClient();
-            var queueRef = queueClient.GetQueueReference(FunctionConstants.QueueNameCleanEmail);
+            var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameCleanEmail);
             var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
             await queueRef.AddMessageAsync(msg);
         }
