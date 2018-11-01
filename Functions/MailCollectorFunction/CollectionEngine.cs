@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MailCollectorFunction
 {
-    class CollectionEngine
+    public class CollectionEngine
     {
         private readonly CoreDependencyInstances _coreDependencies;
         private readonly IMailCollectionRepository _repository;
