@@ -64,7 +64,7 @@ namespace MailCollectorFunction.Data
 
                         emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                        Dependencies.DiagnosticLogging.Info("Authenticating to email server{0}:{1}, : Username: {2}",
+                        Dependencies.DiagnosticLogging.Info("Authenticating to email server [{0}:{1}], : Username: {2}",
                             emailConfig.PopServerHost,emailConfig.PopServerPort, emailConfig.Username);
 
                         emailClient.Authenticate(emailConfig.Username, emailConfig.Password);
