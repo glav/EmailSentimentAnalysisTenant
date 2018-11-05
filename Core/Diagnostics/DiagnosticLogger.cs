@@ -22,6 +22,10 @@ namespace EmailSentimentAnalysis.Core
             return !string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME", EnvironmentVariableTarget.Process));
         }
 
+        private string AppInsightsKey()
+        {
+            return System.Environment.GetEnvironmentVariable(ConfigKeys.AppInsights);
+        }
 
         private void Initialise()
         {
@@ -36,13 +40,28 @@ namespace EmailSentimentAnalysis.Core
             }
             else
             {
-                _logger = new LoggerConfiguration()
-                    .MinimumLevel.Information()
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console()
-                    .WriteTo.ILogger(_functionsLogger)
-                    .CreateLogger();
+                if (string.IsNullOrWhiteSpace(AppInsightsKey()))
+                {
+                    _logger = new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .Enrich.FromLogContext()
+                        .WriteTo.Console()
+                        .WriteTo.ILogger(_functionsLogger)
+                        .CreateLogger();
+                } else
+                {
+                    _logger = new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .Enrich.FromLogContext()
+                        .WriteTo.Console()
+                        .WriteTo.ILogger(_functionsLogger)
+                        .WriteTo.ApplicationInsightsTraces(AppInsightsKey())
+                        .WriteTo.ApplicationInsightsEvents(AppInsightsKey())
+                        .CreateLogger();
+
+                }
             }
 
             Log.Logger = _logger;
