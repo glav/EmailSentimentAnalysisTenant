@@ -87,6 +87,7 @@ namespace MailCollectorFunction.Data
                     }
                 } catch (Exception ex)
                 {
+                    Dependencies.DiagnosticLogging.Error(ex, "Error attempting to collect mail {0}", ex);
                     Dependencies.DiagnosticLogging.Fatal(ex, "Error attempting to collect mail {0}",ex);
                     return emails;
                 }
