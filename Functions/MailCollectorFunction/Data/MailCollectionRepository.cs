@@ -60,12 +60,15 @@ namespace MailCollectorFunction.Data
                 {
                     using (var emailClient = new Pop3Client())
                     {
-                        Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}, Port:{1}", emailConfig.PopServerHost, emailConfig.PopServerPort);
+                        var emailServer = $"[{emailConfig.PopServerHost}:{emailConfig.PopServerPort}]";
+                        Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}", emailServer);
+
+                        emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                         emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.SslOnConnect);
 
                         emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                        Dependencies.DiagnosticLogging.Info($"Authenticating to email server [{emailConfig.PopServerHost}:{emailConfig.PopServerPort}], : Username: [{emailConfig.Username}]");
+                        Dependencies.DiagnosticLogging.Info($"Authenticating to email server [{emailServer}], : Username: [{emailConfig.Username}]");
 
                         emailClient.Authenticate(emailConfig.Username, emailConfig.Password);
                         Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server");
