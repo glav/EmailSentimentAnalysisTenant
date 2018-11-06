@@ -57,7 +57,6 @@ namespace EmailSentimentAnalysis.Core
                         .Enrich.FromLogContext()
                         .WriteTo.Console()
                         .WriteTo.ILogger(_functionsLogger)
-                        .WriteTo.ApplicationInsightsTraces(AppInsightsKey())
                         .WriteTo.ApplicationInsightsEvents(AppInsightsKey())
                         .CreateLogger();
 
