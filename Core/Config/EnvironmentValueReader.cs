@@ -27,7 +27,7 @@ namespace Core.Config
                 var val = Environment.GetEnvironmentVariable(ev);
                 if (!string.IsNullOrWhiteSpace(val))
                 {
-                    _logger.Info($"Found environment setting: {0}",ev);
+                    _logger.Info("Found environment setting: {0}",ev);
                     return val;
                 }
                 _logger.Info("Environment setting for: {0} not present", ev);

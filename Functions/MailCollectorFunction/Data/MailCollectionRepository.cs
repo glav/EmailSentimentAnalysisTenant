@@ -68,7 +68,7 @@ namespace MailCollectorFunction.Data
 
                         emailClient.AuthenticationMechanisms.Clear();
                         emailClient.AuthenticationMechanisms.Add("PLAIN");
-                        //emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                        emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
                         Dependencies.DiagnosticLogging.Info($"Authenticating to email server [{emailServer}], : Username: [{emailConfig.Username}]");
 
