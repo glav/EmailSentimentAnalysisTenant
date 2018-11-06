@@ -64,7 +64,7 @@ namespace MailCollectorFunction.Data
                         Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}", emailServer);
 
                         emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                        emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.SslOnConnect);
+                        emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.Auto);
 
                         emailClient.AuthenticationMechanisms.Clear();
                         emailClient.AuthenticationMechanisms.Add("PLAIN");
