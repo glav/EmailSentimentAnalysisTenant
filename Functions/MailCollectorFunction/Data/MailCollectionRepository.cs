@@ -9,6 +9,7 @@ using MailKit.Net.Pop3;
 using System.Linq;
 using MimeKit;
 using Core.Data;
+using MailKit.Security;
 
 namespace MailCollectorFunction.Data
 {
@@ -60,7 +61,7 @@ namespace MailCollectorFunction.Data
                     using (var emailClient = new Pop3Client())
                     {
                         Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}, Port:{1}", emailConfig.PopServerHost, emailConfig.PopServerPort);
-                        emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, true);
+                        emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.SslOnConnect);
 
                         emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
