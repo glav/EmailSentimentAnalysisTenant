@@ -66,7 +66,9 @@ namespace MailCollectorFunction.Data
                         emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                         emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.SslOnConnect);
 
-                        emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                        emailClient.AuthenticationMechanisms.Clear();
+                        emailClient.AuthenticationMechanisms.Add("PLAIN");
+                        //emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
                         Dependencies.DiagnosticLogging.Info($"Authenticating to email server [{emailServer}], : Username: [{emailConfig.Username}]");
 
