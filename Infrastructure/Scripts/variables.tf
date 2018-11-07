@@ -30,7 +30,6 @@ variable "queue_process_name" {
 }
 
 variable "pop_mail_host" {
-  default="pop.gmail.com"
 }
 
 variable "pop_mail_port" {
@@ -42,7 +41,6 @@ variable "pop_mail_username" {
 }
 
 variable "pop_mail_password" {
-  default="{ENTER-YOUR-PASSWORD}"
 }
 
 variable "pop_mail_use_ssl" {
