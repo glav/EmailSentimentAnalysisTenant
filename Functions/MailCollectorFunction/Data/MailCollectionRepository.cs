@@ -1,15 +1,14 @@
-﻿using MailCollectorFunction.Config;
-using Core;
-using Microsoft.WindowsAzure.Storage.Queue;
+﻿using Core;
+using Core.Data;
+using MailCollectorFunction.Config;
+using MailKit.Net.Pop3;
+using MailKit.Security;
 using Microsoft.WindowsAzure.Storage.Table;
+using MimeKit;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using MailKit.Net.Pop3;
 using System.Linq;
-using MimeKit;
-using Core.Data;
-using MailKit.Security;
+using System.Threading.Tasks;
 
 namespace MailCollectorFunction.Data
 {
@@ -28,7 +27,7 @@ namespace MailCollectorFunction.Data
             }
             try
             {
-                Dependencies.DiagnosticLogging.Info("{0} mail messages to store.",mailList.Count);
+                Dependencies.DiagnosticLogging.Info("{0} mail messages to store.", mailList.Count);
 
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
 
@@ -66,11 +65,9 @@ namespace MailCollectorFunction.Data
                         emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                         emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.Auto);
 
-                        emailClient.AuthenticationMechanisms.Clear();
-                        emailClient.AuthenticationMechanisms.Add("PLAIN");
                         emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                        Dependencies.DiagnosticLogging.Info($"Authenticating to email server [{emailServer}], : Username: [{emailConfig.Username}]");
+                        Dependencies.DiagnosticLogging.Info($"Authenticating to email server {emailServer}, : Username: [{emailConfig.Username}]");
 
                         emailClient.Authenticate(emailConfig.Username, emailConfig.Password);
                         Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server");
@@ -91,7 +88,8 @@ namespace MailCollectorFunction.Data
 
                         return emails;
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Dependencies.DiagnosticLogging.Fatal(ex, "Error attempting to collect mail");
                     return emails;
