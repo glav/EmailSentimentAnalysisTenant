@@ -33,11 +33,9 @@ variable "pop_mail_host" {
 }
 
 variable "pop_mail_port" {
-  default="995"
 }
 
 variable "pop_mail_username" {
-  default="popusername"
 }
 
 variable "pop_mail_password" {
