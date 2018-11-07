@@ -23,7 +23,7 @@ namespace Core.Config
             }
             foreach (var ev in environmentVariables)
             {
-                _logger.Info("Getting environment setting for: {0}", ev);
+                _logger.Verbose("Getting environment setting for: {0}", ev);
                 var val = Environment.GetEnvironmentVariable(ev);
                 if (!string.IsNullOrWhiteSpace(val))
                 {

@@ -70,7 +70,7 @@ namespace MailCollectorFunction.Data
                         Dependencies.DiagnosticLogging.Info($"Authenticating to email server {emailServer}, : Username: [{emailConfig.Username}]");
 
                         emailClient.Authenticate(emailConfig.Username, emailConfig.Password);
-                        Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server");
+                        Dependencies.DiagnosticLogging.Info($"Successfully authenticated to email server:{emailServer}");
 
                         for (int i = 0; i < emailClient.Count && i < maxCount; i++)
                         {
@@ -84,7 +84,7 @@ namespace MailCollectorFunction.Data
                             emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
                         }
 
-                        Dependencies.DiagnosticLogging.Info("Collected a {0} emails from server.", emails.Count);
+                        Dependencies.DiagnosticLogging.Info("Collected {0} emails from server.", emails.Count);
 
                         return emails;
                     }
@@ -99,11 +99,13 @@ namespace MailCollectorFunction.Data
 
         public async Task LodgeMailCollectedAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
+            Dependencies.DiagnosticLogging.Info("Lodging Mail Collected Acknowledgement");
             var acct = CreateStorageAccountReference();
             var queueClient = acct.CreateCloudQueueClient();
             var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameCleanEmail);
             var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
             await queueRef.AddMessageAsync(msg);
+            Dependencies.DiagnosticLogging.Info("Mail Collected Acknowledgement lodged.");
         }
 
     }
