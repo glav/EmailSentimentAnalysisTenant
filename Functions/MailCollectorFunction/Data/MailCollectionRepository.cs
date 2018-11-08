@@ -1,6 +1,7 @@
 ﻿using Core;
 using Core.Data;
 using MailCollectorFunction.Config;
+using MailCollectorFunction.Extensions;
 using MailKit.Net.Pop3;
 using MailKit.Security;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -25,16 +26,14 @@ namespace MailCollectorFunction.Data
                 Dependencies.DiagnosticLogging.Info("No email to store, exiting.");
                 return;
             }
+            var numMsgs = mailList.Count;
             try
             {
-                Dependencies.DiagnosticLogging.Verbose($"{mailList.Count} mail messages to store.");
-
+                Dependencies.DiagnosticLogging.Verbose($"{numMsgs} mail messages to store.");
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
 
                 foreach (var m in mailList)
                 {
-                    m.PartitionKey = Guid.NewGuid().ToString();
-                    m.RowKey = m.ToAddresses.First().Address;
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
@@ -42,7 +41,7 @@ namespace MailCollectorFunction.Data
                         Dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {m}", m);
                     }
                 }
-                Dependencies.DiagnosticLogging.Info("Mail messages stored: #{mailList.Count}",mailList.Count);
+                Dependencies.DiagnosticLogging.Info("Mail messages stored: #{numMsgs}", numMsgs);
             }
             catch (Exception ex)
             {
@@ -55,55 +54,65 @@ namespace MailCollectorFunction.Data
             }
         }
 
-        public async Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig, int maxCount = EmailConfiguration.MaxEmailToRetrievePerCall)
+        public async Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig)
         {
-            var emails = new List<RawMailMessageEntity>();
-            Dependencies.DiagnosticLogging.Info("Attempting to collect a maximum of {maxCount} emails", maxCount);
+            var emailsRetrieved = new List<RawMailMessageEntity>();
+            var emailsOnServer = new List<MimeMessage>();
+            Dependencies.DiagnosticLogging.Verbose($"Attempting to collect a maximum of {emailConfig.MaxEmailsToRetrieve} emails");
 
             try
             {
                 using (var emailClient = new Pop3Client())
                 {
-                    var emailServer = $"[{emailConfig.PopServerHost}:{emailConfig.PopServerPort}]";
-                    Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{emailServer}", emailServer);
+                    var emailServerInfo = $"[{emailConfig.PopServerHost}:{emailConfig.PopServerPort}]";
+                    Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{emailServer}", emailServerInfo);
 
-                    emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                    await emailClient.ConnectAsync(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.Auto);
+                    await SetupConnectToEmailServerAndAuthenticate(emailConfig, emailClient, emailServerInfo);
 
-                    emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                    var msgCountToCollect = emailClient.Count > emailConfig.MaxEmailsToRetrieve ? emailConfig.MaxEmailsToRetrieve : emailClient.Count; ;
+                    Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue, retrieving {msgCountToCollect}",
+                        emailServerInfo, emailClient.Count, msgCountToCollect);
 
-                    Dependencies.DiagnosticLogging.Verbose($"Authenticating to email server {emailServer}, : Username: [{emailConfig.Username}]");
+                    emailsOnServer.AddRange(await emailClient.GetMessagesAsync(0, msgCountToCollect));
+                    await DeleteMessagesIfRequired(emailConfig, emailClient, msgCountToCollect);
 
-                    await emailClient.AuthenticateAsync(emailConfig.Username, emailConfig.Password);
-                    var msgCount = emailClient.Count;
+                    var cnt = emailsOnServer.Count;
+                    Dependencies.DiagnosticLogging.Info("Collected {cnt} emails from server.", cnt);
 
-                    Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue",emailServer,msgCount);
-
-                    for (int i = 0; i < msgCount && i < maxCount; i++)
-                    {
-                        var message = await emailClient.GetMessageAsync(i);
-                        var emailMessage = new RawMailMessageEntity
-                        {
-                            Body = !string.IsNullOrEmpty(message.HtmlBody) ? message.HtmlBody : message.TextBody,
-                            Subject = message.Subject
-                        };
-                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
-                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
-                        emails.Add(emailMessage);
-                    }
-
-                    await emailClient.DisconnectAsync(true);
-                    var cnt = emails.Count;
-                    Dependencies.DiagnosticLogging.Info("Collected {cnt`} emails from server.", cnt);
-
-                    return emails;
+                    emailsRetrieved.AddRange(emailsOnServer.Select(m => m.ToMailMessageEntity()));
+                    return emailsRetrieved;
                 }
             }
             catch (Exception ex)
             {
                 Dependencies.DiagnosticLogging.Fatal(ex, "Error attempting to collect mail");
-                return emails;
+                return emailsRetrieved;
             }
+        }
+
+        private async Task DeleteMessagesIfRequired(EmailConfiguration emailConfig, Pop3Client emailClient, int msgCountToCollect)
+        {
+            try
+            {
+                if (emailConfig.DeleteMailFromServerOnceCollected)
+                {
+                    await emailClient.DeleteMessagesAsync(0, msgCountToCollect);
+                }
+                await emailClient.DisconnectAsync(true);
+            }
+            catch (Exception ex)
+            {
+                Dependencies.DiagnosticLogging.Error(ex, "Error deleting collected messages");
+            }
+        }
+
+        private async Task SetupConnectToEmailServerAndAuthenticate(EmailConfiguration emailConfig, Pop3Client emailClient, string emailServerInfo)
+        {
+            emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            await emailClient.ConnectAsync(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.Auto);
+            emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+            Dependencies.DiagnosticLogging.Verbose($"Authenticating to email server {emailServerInfo}, : Username: [{emailConfig.Username}]");
+            await emailClient.AuthenticateAsync(emailConfig.Username, emailConfig.Password);
         }
 
         public async Task LodgeMailCollectedAcknowledgementAsync(GenericActionMessage receivedMessage)

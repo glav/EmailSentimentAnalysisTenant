@@ -15,7 +15,9 @@ namespace EmailSentimentAnalysis.Tests.Unit
         {
             _testFlag = flag;
         }
-        public Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig, int maxCount = 10)
+        public Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig,
+            bool deleteMessagesFromServerOnceRetrieved = false,
+            int maxCount = 10)
         {
             CollectMailCount++;
             if (_testFlag == TestFlag.BlowUpOnCollection)

@@ -7,14 +7,11 @@ namespace MailCollectorFunction.Data
 {
     public class RawMailMessageEntity : TableEntity
     {
-        public RawMailMessageEntity(string partitionKey, string rowKey) : base(partitionKey, rowKey)
-        {
-        }
-
         public RawMailMessageEntity() : base()
         {
             FromAddresses = new List<RawEmailAddress>();
             ToAddresses = new List<RawEmailAddress>();
+            PartitionKey = Guid.NewGuid().ToString();
         }
         public List<RawEmailAddress> FromAddresses { get; set; }
         public List<RawEmailAddress> ToAddresses { get; set; }

@@ -67,6 +67,8 @@ resource "azurerm_function_app" "EmailSentimentCollectMailFuncApp" {
     "popemailusername" = "${var.pop_mail_username}"
     "popemailpassword"= "${var.pop_mail_password}"
     "popemailusessl" = "${var.pop_mail_use_ssl}"
+    "deletemailfromServeroncecollected" = "${var.delete_mail_once_collected}"
+    "maxemailstoretrieve" = "${var.max_emails_to_retrieve}"
   }
 }
 

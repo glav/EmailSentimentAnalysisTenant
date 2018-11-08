@@ -8,7 +8,7 @@ namespace MailCollectorFunction.Data
     public interface IMailCollectionRepository
     {
         Task StoreMailAsync(List<RawMailMessageEntity> mailList);
-        Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig, int maxCount = EmailConfiguration.MaxEmailToRetrievePerCall);
+        Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig);
 
         Task LodgeMailCollectedAcknowledgementAsync(GenericActionMessage receivedMessage);
     }

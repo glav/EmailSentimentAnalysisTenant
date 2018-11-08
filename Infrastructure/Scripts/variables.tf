@@ -45,6 +45,13 @@ variable "pop_mail_use_ssl" {
   default="true"
 }
 
+variable "delete_mail_once_collected" {
+  default="true"
+}
+
+variable "max_emails_to_retrieve" {
+  default = "10"
+}
 locals {
   queue_name = "${var.app}${var.environment}"
   resource_group_name = "${var.app}${var.environment}"

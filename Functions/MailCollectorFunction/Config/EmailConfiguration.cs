@@ -9,14 +9,14 @@ namespace MailCollectorFunction.Config
 {
     public class EmailConfiguration
     {
-        public const int MaxEmailToRetrievePerCall = 10;
-
         public string PopServerHost { get; set; }
         public int PopServerPort { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public bool UseSsl { get; set; }
+        public int MaxEmailsToRetrieve { get; set; }
 
+        public bool DeleteMailFromServerOnceCollected { get; set; }
         public static EmailConfiguration PopulateConfigFromEnviromentVariables(CoreDependencyInstances dependencies)
         {
             var mailConfig = new EmailConfiguration();
@@ -24,7 +24,7 @@ namespace MailCollectorFunction.Config
 
 
             mailConfig.PopServerHost = 
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname"}, "pop.gmail.com");
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname" });
             mailConfig.PopServerPort =
                 envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995").ToInt();
             mailConfig.Username = 
@@ -33,6 +33,10 @@ namespace MailCollectorFunction.Config
                 envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailpassword" });
             mailConfig.UseSsl =
                 envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusessl" }).ToBool();
+            mailConfig.DeleteMailFromServerOnceCollected =
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "deletemailfromServeroncecollected" }).ToBool();
+            mailConfig.MaxEmailsToRetrieve =
+                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "maxemailstoretrieve" }, "10").ToInt();
             return mailConfig;
         }
     }
