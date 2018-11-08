@@ -33,11 +33,12 @@ namespace MailCollectorFunction.Data
 
                 foreach (var m in mailList)
                 {
-                    var op = TableOperation.Insert(m);
+                    //var op = TableOperation.Insert(m);
+                    var op = TableOperation.Insert(new RawMailMessageEntity());
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
                     {
-                        Dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {0}", m);
+                        Dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {m}", m);
                     }
                 }
                 Dependencies.DiagnosticLogging.Info($"{mailList.Count} mail messages stored.");
