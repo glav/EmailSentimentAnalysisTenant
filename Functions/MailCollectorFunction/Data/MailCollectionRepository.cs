@@ -27,7 +27,7 @@ namespace MailCollectorFunction.Data
             }
             try
             {
-                Dependencies.DiagnosticLogging.Info("{0} mail messages to store.", mailList.Count);
+                Dependencies.DiagnosticLogging.Verbose($"{mailList.Count} mail messages to store.");
 
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
 
@@ -40,7 +40,7 @@ namespace MailCollectorFunction.Data
                         Dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {0}", m);
                     }
                 }
-                Dependencies.DiagnosticLogging.Info("{0} mail messages stored.", mailList.Count);
+                Dependencies.DiagnosticLogging.Info($"{mailList.Count} mail messages stored.");
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ namespace MailCollectorFunction.Data
                             emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
                         }
 
-                        Dependencies.DiagnosticLogging.Info("Collected {0} emails from server.", emails.Count);
+                        Dependencies.DiagnosticLogging.Info($"Collected {emails.Count} emails from server.");
 
                         return emails;
                     }
