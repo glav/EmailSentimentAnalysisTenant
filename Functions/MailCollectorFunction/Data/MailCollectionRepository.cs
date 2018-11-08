@@ -53,7 +53,7 @@ namespace MailCollectorFunction.Data
             return Task.Run<List<RawMailMessageEntity>>(() =>
             {
                 var emails = new List<RawMailMessageEntity>();
-                Dependencies.DiagnosticLogging.Info("Attempting to collect a maximum of {0} emails", maxCount);
+                Dependencies.DiagnosticLogging.Info("Attempting to collect a maximum of {maxCount} emails", maxCount);
 
                 try
                 {
@@ -70,9 +70,11 @@ namespace MailCollectorFunction.Data
                         Dependencies.DiagnosticLogging.Info($"Authenticating to email server {emailServer}, : Username: [{emailConfig.Username}]");
 
                         emailClient.Authenticate(emailConfig.Username, emailConfig.Password);
-                        Dependencies.DiagnosticLogging.Info($"Successfully authenticated to email server:{emailServer}");
+                        var msgCount = emailClient.Count;
 
-                        for (int i = 0; i < emailClient.Count && i < maxCount; i++)
+                        Dependencies.DiagnosticLogging.Info($"Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue");
+
+                        for (int i = 0; i < msgCount && i < maxCount; i++)
                         {
                             var message = emailClient.GetMessage(i);
                             var emailMessage = new RawMailMessageEntity
