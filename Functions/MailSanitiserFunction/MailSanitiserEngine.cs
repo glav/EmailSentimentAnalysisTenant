@@ -1,15 +1,25 @@
-﻿using MailSanitiserFunction.Strategies;
+﻿using Core;
+using Core.Data;
+using MailSanitiserFunction.Data;
+using MailSanitiserFunction.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailSanitiserFunction
 {
     public class MailSanitiserEngine
     {
-        public MailSanitiserEngine()
+        private readonly CoreDependencyInstances _coreDependencies;
+        private readonly IMailSanitiserRepository _repository;
+
+        public MailSanitiserEngine(CoreDependencyInstances coreDependencies, IMailSanitiserRepository repository)
         {
+            _coreDependencies = coreDependencies;
+            _repository = repository;
+
             SetupStrategies();
         }
 
@@ -24,11 +34,24 @@ namespace MailSanitiserFunction
 
         public string SanitiseForAllContentTypes(string content)
         {
-            return Sanitise(content, SanitiseContentType.Html | SanitiseContentType.PlainText);
+            return SanitiseContent(content, SanitiseContentType.Html | SanitiseContentType.PlainText);
 
         }
 
-        public string Sanitise(string content, SanitiseContentType contentType)
+        public async Task SanitiseMail(GenericActionMessage receivedMessage)
+        {
+            _coreDependencies.DiagnosticLogging.Info("SanitiseMail");
+
+            try
+            {
+                await _repository.LodgeMailSanitisedAcknowledgementAsync(receivedMessage);
+            } catch (Exception ex)
+            {
+                _coreDependencies.DiagnosticLogging.Fatal(ex, "Error attempting to Sanitise Mail");
+            }
+        }
+
+        public string SanitiseContent(string content, SanitiseContentType contentType)
         {
             if (SanitiserStrategies.Count == 0)
             {

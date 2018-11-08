@@ -1,3 +1,4 @@
+using Core;
 using MailSanitiserFunction;
 using MailSanitiserFunction.Strategies;
 using System;
@@ -9,16 +10,19 @@ namespace EmailSentimentAnalysis.Tests.Unit
     {
         private readonly TestDataHelper _testHelper = new TestDataHelper();
         private string _emailHtmlContent;
+        private CoreDependencyInstances _coreDependencies;
 
         public HtmlStrategyTests()
         {
+            _coreDependencies = CoreDependencies.Setup();
             _emailHtmlContent = _testHelper.GetFileDataEmbeddedInAssembly("WeeklyEmailHtmlContent.html");
         }
         [Fact]
         public void ShouldStripAllHtml()
         {
-            var engine = new MailSanitiserEngine();
-            var result = engine.Sanitise(_emailHtmlContent, SanitiseContentType.Html);
+            var repo = new DummySanitiserRepo();
+            var engine = new MailSanitiserEngine(_coreDependencies,repo);
+            var result = engine.SanitiseContent(_emailHtmlContent, SanitiseContentType.Html);
 
             Assert.False(result.Contains('<'));
             Assert.False(result.Contains('>'));
@@ -47,7 +51,8 @@ namespace EmailSentimentAnalysis.Tests.Unit
         [Fact]
         public void ShouldStripAllButBodyElementFromEmailHtmlAndRemoveMarkup()
         {
-            var engine = new MailSanitiserEngine();
+            var repo = new DummySanitiserRepo();
+            var engine = new MailSanitiserEngine(_coreDependencies, repo);
             var result = engine.SanitiseForAllContentTypes(_emailHtmlContent);
 
             Assert.DoesNotContain("<body", result.ToLowerInvariant());
