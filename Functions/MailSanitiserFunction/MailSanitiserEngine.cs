@@ -38,7 +38,7 @@ namespace MailSanitiserFunction
 
         }
 
-        public async Task SanitiseMail(GenericActionMessage receivedMessage)
+        public async Task SanitiseMailAsync(GenericActionMessage receivedMessage)
         {
             _coreDependencies.DiagnosticLogging.Info("SanitiseMail");
 

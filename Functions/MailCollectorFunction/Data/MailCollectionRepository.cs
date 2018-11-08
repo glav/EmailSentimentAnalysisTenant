@@ -48,7 +48,7 @@ namespace MailCollectorFunction.Data
             }
         }
 
-        public Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig, int maxCount = 20)
+        public Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig, int maxCount = EmailConfiguration.MaxEmailToRetrievePerCall)
         {
             return Task.Run<List<RawMailMessageEntity>>(() =>
             {
@@ -60,7 +60,7 @@ namespace MailCollectorFunction.Data
                     using (var emailClient = new Pop3Client())
                     {
                         var emailServer = $"[{emailConfig.PopServerHost}:{emailConfig.PopServerPort}]";
-                        Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{0}", emailServer);
+                        Dependencies.DiagnosticLogging.Verbose("Collecting mail from Host:{emailServer}", emailServer);
 
                         emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                         emailClient.Connect(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.Auto);
@@ -84,6 +84,7 @@ namespace MailCollectorFunction.Data
                             };
                             emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
                             emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
+                            emails.Add(emailMessage);
                         }
 
                         Dependencies.DiagnosticLogging.Info($"Collected {emails.Count} emails from server.");

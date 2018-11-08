@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Core;
 using Core.Data;
 using Microsoft.Azure.WebJobs;
@@ -10,11 +11,12 @@ namespace MailProcessorFunction
     public static class MailProcessor
     {
         [FunctionName("MailProcessor")]
-        public static void Run([QueueTrigger(DataStores.Queues.QueueNameProcessEmail)]string myQueueItem, ILogger log)
+        public async static Task Run([QueueTrigger(DataStores.Queues.QueueNameProcessEmail)]string myQueueItem, ILogger log)
         {
             var dependencies = CoreDependencies.Setup(log);
+            var receivedMessage = GenericActionMessage.FromString(myQueueItem);
 
-            dependencies.DiagnosticLogging.Verbose($"MailProcessor Timer trigger function executed at: {DateTime.Now}");
+            dependencies.DiagnosticLogging.Verbose($"MailProcessor Timer trigger function executed at: {DateTime.UtcNow} UTC");
         }
     }
 }

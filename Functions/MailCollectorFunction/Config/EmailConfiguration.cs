@@ -9,6 +9,8 @@ namespace MailCollectorFunction.Config
 {
     public class EmailConfiguration
     {
+        public const int MaxEmailToRetrievePerCall = 10;
+
         public string PopServerHost { get; set; }
         public int PopServerPort { get; set; }
         public string Username { get; set; }
