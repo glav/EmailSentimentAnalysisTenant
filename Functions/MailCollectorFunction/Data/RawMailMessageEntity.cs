@@ -11,7 +11,7 @@ namespace MailCollectorFunction.Data
         {
         }
 
-        public RawMailMessageEntity()
+        public RawMailMessageEntity() : base()
         {
             FromAddresses = new List<RawEmailAddress>();
             ToAddresses = new List<RawEmailAddress>();

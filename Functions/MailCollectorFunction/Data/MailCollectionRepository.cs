@@ -33,7 +33,8 @@ namespace MailCollectorFunction.Data
 
                 foreach (var m in mailList)
                 {
-                    Dependencies.DiagnosticLogging.Info("Writing message");
+                    m.PartitionKey = m.ToAddresses.First().Address;
+                    m.RowKey = m.ToAddresses.First().Address;
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
                     Dependencies.DiagnosticLogging.Info("Done Writing message");
