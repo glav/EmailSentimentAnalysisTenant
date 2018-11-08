@@ -37,13 +37,12 @@ namespace MailCollectorFunction.Data
                     m.RowKey = m.ToAddresses.First().Address;
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
-                    Dependencies.DiagnosticLogging.Info("Done Writing message");
                     if (result.HttpStatusCode >= 300)
                     {
                         Dependencies.DiagnosticLogging.Error("Unable to write MailMessage to table storage {m}", m);
                     }
                 }
-                Dependencies.DiagnosticLogging.Info($"{mailList.Count} mail messages stored.");
+                Dependencies.DiagnosticLogging.Info("Mail messages stored: #{mailList.Count}",mailList.Count);
             }
             catch (Exception ex)
             {
@@ -73,12 +72,12 @@ namespace MailCollectorFunction.Data
 
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                    Dependencies.DiagnosticLogging.Info($"Authenticating to email server {emailServer}, : Username: [{emailConfig.Username}]");
+                    Dependencies.DiagnosticLogging.Verbose($"Authenticating to email server {emailServer}, : Username: [{emailConfig.Username}]");
 
                     await emailClient.AuthenticateAsync(emailConfig.Username, emailConfig.Password);
                     var msgCount = emailClient.Count;
 
-                    Dependencies.DiagnosticLogging.Info($"Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue");
+                    Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue",emailServer,msgCount);
 
                     for (int i = 0; i < msgCount && i < maxCount; i++)
                     {
@@ -94,7 +93,8 @@ namespace MailCollectorFunction.Data
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    Dependencies.DiagnosticLogging.Info($"Collected {emails.Count} emails from server.");
+                    var cnt = emails.Count;
+                    Dependencies.DiagnosticLogging.Info("Collected {cnt`} emails from server.", cnt);
 
                     return emails;
                 }
@@ -108,7 +108,7 @@ namespace MailCollectorFunction.Data
 
         public async Task LodgeMailCollectedAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
-            Dependencies.DiagnosticLogging.Info("Lodging Mail Collected Acknowledgement");
+            Dependencies.DiagnosticLogging.Verbose("Lodging Mail Collected Acknowledgement");
             var acct = CreateStorageAccountReference();
             var queueClient = acct.CreateCloudQueueClient();
             var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameCleanEmail);
