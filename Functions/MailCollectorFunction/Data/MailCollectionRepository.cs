@@ -47,6 +47,11 @@ namespace MailCollectorFunction.Data
             catch (Exception ex)
             {
                 Dependencies.DiagnosticLogging.Error(ex, "Error sending mail list to queue ");
+                var baseEx = ex.GetBaseException();
+                if (baseEx != null)
+                {
+                    Dependencies.DiagnosticLogging.Error(baseEx, "Error sending mail list to queue (Inner/base error)");
+                }
             }
         }
 
