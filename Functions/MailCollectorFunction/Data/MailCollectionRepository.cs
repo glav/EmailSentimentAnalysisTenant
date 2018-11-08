@@ -33,7 +33,7 @@ namespace MailCollectorFunction.Data
 
                 foreach (var m in mailList)
                 {
-                    m.PartitionKey = m.ToAddresses.First().Address;
+                    m.PartitionKey = Guid.NewGuid().ToString();
                     m.RowKey = m.ToAddresses.First().Address;
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
