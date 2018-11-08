@@ -1,7 +1,5 @@
 ﻿using MailSchedulerFunction.Data;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MailSchedulerFunction
@@ -19,12 +17,19 @@ namespace MailSchedulerFunction
 
         public async Task ScheduleMailCollectionIfNotInProgressAsync()
         {
-            _coreDependencies.DiagnosticLogging.Info("Attempting to schedule mail collection.");
-            var mailProcessingInProgress = await _repository.IsMailOperationInProgressAsync();
-            if (mailProcessingInProgress)
+            _coreDependencies.DiagnosticLogging.Verbose("Attempting to schedule mail collection.");
+            try
             {
-                _coreDependencies.DiagnosticLogging.Info("Mail processing currently in progress, skipping mail collection");
-                return;
+                var mailProcessingInProgress = await _repository.IsMailOperationInProgressAsync();
+                if (mailProcessingInProgress)
+                {
+                    _coreDependencies.DiagnosticLogging.Info("Mail processing currently in progress, skipping mail collection");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                _coreDependencies.DiagnosticLogging.Error(ex, "Error checking if Mail Operation in progress");
             }
 
             _coreDependencies.DiagnosticLogging.Verbose("Mail processing not in progress, attempting to schedule mail collection");

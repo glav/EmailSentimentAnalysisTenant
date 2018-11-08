@@ -28,16 +28,9 @@ namespace MailSchedulerFunction.Data
         public async Task<bool> IsMailOperationInProgressAsync()
         {
             var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
-            try
-            {
-                var op = TableOperation.Retrieve(DataStores.Tables.SchedulerTablePartitionKey, DataStores.Tables.SchedulerTableRowKey);
-                var result = await tblRef.ExecuteAsync(op);
-                return result != null && result.HttpStatusCode < 300;
-            } catch (Exception ex)
-            {
-                Dependencies.DiagnosticLogging.Error(ex, "Error checking if Mail Operation in progress");
-            }
-            return false;
+            var op = TableOperation.Retrieve(DataStores.Tables.SchedulerTablePartitionKey, DataStores.Tables.SchedulerTableRowKey);
+            var result = await tblRef.ExecuteAsync(op);
+            return result != null && result.HttpStatusCode < 300;
         }
 
         public async Task SetMailOperationToInProgressAsync()
@@ -54,7 +47,8 @@ namespace MailSchedulerFunction.Data
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
                 var op = TableOperation.Insert(new MailSchedulerEntity());
                 var result = await tblRef.ExecuteAsync(op);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Dependencies.DiagnosticLogging.Error(ex, "Error setting mail operation progress");
             }
