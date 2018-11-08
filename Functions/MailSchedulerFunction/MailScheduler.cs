@@ -13,10 +13,9 @@ namespace MailSchedulerFunction
         [FunctionName("MailScheduler")]
         public static async Task Run([TimerTrigger("0/15 * * * * *")]TimerInfo myTimer, ILogger log)
         {
-            log.LogInformation("Starting MailScheduler function");
             var coreDependencies = CoreDependencies.Setup(log);
 
-            coreDependencies.DiagnosticLogging.Info($"MailScheduler Timer trigger function executed at: {DateTime.UtcNow} UTC");
+            coreDependencies.DiagnosticLogging.Verbose($"MailScheduler Timer trigger function executed at: {DateTime.UtcNow} UTC");
 
             // Setup dependencies and invoke main processing component.
             var engine = new SchedulingEngine(coreDependencies, new DataSchedulerRepository(coreDependencies));

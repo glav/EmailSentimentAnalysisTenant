@@ -27,7 +27,6 @@ namespace MailSchedulerFunction.Data
 
         public async Task<bool> IsMailOperationInProgressAsync()
         {
-            Dependencies.DiagnosticLogging.Info("IsMailOperationInprogress");
             var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
             try
             {

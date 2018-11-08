@@ -11,11 +11,10 @@ namespace MailSanitiserFunction
         [FunctionName("MailSanitiser")]
         public static void Run([QueueTrigger(DataStores.Queues.QueueNameCleanEmail)]string myQueueItem, ILogger log)
         {
-            log.LogInformation("Starting MailSanitiser function");
             var dependencies = CoreDependencies.Setup(log);
             var receivedMessage = GenericActionMessage.FromString(myQueueItem);
 
-            dependencies.DiagnosticLogging.Info($"MailSanitiser Timer trigger function executed at: {DateTime.UtcNow}");
+            dependencies.DiagnosticLogging.Verbose($"MailSanitiser Timer trigger function executed at: {DateTime.UtcNow}");
         }
     }
 }
