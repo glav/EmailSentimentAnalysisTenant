@@ -72,7 +72,10 @@ namespace MailCollectorFunction.Data
                     var msgCountToCollect = emailClient.Count > emailConfig.MaxEmailsToRetrieve ? emailConfig.MaxEmailsToRetrieve : emailClient.Count; ;
                     Dependencies.DiagnosticLogging.Info("Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue, retrieving {msgCountToCollect}",
                         emailServerInfo, emailClient.Count, msgCountToCollect);
-
+                    if (msgCountToCollect == 0)
+                    {
+                        return emailsRetrieved;
+                    }
                     emailsOnServer.AddRange(await emailClient.GetMessagesAsync(0, msgCountToCollect));
                     await DeleteMessagesIfRequired(emailConfig, emailClient, msgCountToCollect);
 
