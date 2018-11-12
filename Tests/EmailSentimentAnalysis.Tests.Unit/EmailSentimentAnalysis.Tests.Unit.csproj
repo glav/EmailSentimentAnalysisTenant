@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestData\SImpleEmailInHtml.html" />
     <None Remove="TestData\WeeklyEmailHtmlContent.html" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="TestData\SImpleEmailInHtml.html" />
     <EmbeddedResource Include="TestData\WeeklyEmailHtmlContent.html" />
   </ItemGroup>
 
