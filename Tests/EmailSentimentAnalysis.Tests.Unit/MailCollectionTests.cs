@@ -4,6 +4,7 @@ using Core.Data;
 using MailCollectorFunction;
 using MailSanitiserFunction;
 using MailSanitiserFunction.Strategies;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace EmailSentimentAnalysis.Tests.Unit
@@ -16,12 +17,12 @@ namespace EmailSentimentAnalysis.Tests.Unit
             _coreDependencies = CoreDependencies.Setup();
         }
         [Fact]
-        public void MailCollectionShouldLodgeCollectionCompleteAcknowledgementEvenIfMailFailure()
+        public async Task MailCollectionShouldLodgeCollectionCompleteAcknowledgementEvenIfMailFailure()
         {
             var repo = new DummyCollectionRepo(TestFlag.BlowUpOnCollection);
             var engine = new CollectionEngine(_coreDependencies, repo, null);
 
-            engine.PerformMailCollectionAsync(new GenericActionMessage()).Wait();
+            await engine.PerformMailCollectionAsync(new GenericActionMessage());
 
             Assert.Equal(1, repo.CollectMailCount);
             Assert.Equal(0, repo.StoreMailCount);
@@ -29,12 +30,12 @@ namespace EmailSentimentAnalysis.Tests.Unit
       }
 
         [Fact]
-        public void MailCollectionShouldLodgeCollectionCompleteAcknowledgementEvenIfStorageFailure()
+        public async Task MailCollectionShouldLodgeCollectionCompleteAcknowledgementEvenIfStorageFailure()
         {
             var repo = new DummyCollectionRepo(TestFlag.BlowUpOnStoring);
             var engine = new CollectionEngine(_coreDependencies, repo, null);
 
-            engine.PerformMailCollectionAsync(new GenericActionMessage()).Wait();
+            await engine.PerformMailCollectionAsync(new GenericActionMessage());
 
             Assert.Equal(1, repo.CollectMailCount);
             Assert.Equal(1, repo.StoreMailCount);

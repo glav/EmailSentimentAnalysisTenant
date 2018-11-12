@@ -44,12 +44,24 @@ namespace MailSanitiserFunction
 
             try
             {
+                var mail = await _repository.GetCollectedMailAsync();
+                if (mail.Count == 0)
+                {
+                    _coreDependencies.DiagnosticLogging.Info("SanitiseMail: Nothing to sanitise");
+                    return;
+                }
+                mail.ForEach(m =>
+                {
+                    m.SanitisedBody = SanitiseForAllContentTypes(m.Body);
+                });
+                await _repository.StoreSanitisedMailAsync(mail);
                 await _repository.LodgeMailSanitisedAcknowledgementAsync(receivedMessage);
             } catch (Exception ex)
             {
                 _coreDependencies.DiagnosticLogging.Fatal(ex, "Error attempting to Sanitise Mail");
             }
         }
+
 
         public string SanitiseContent(string content, SanitiseContentType contentType)
         {

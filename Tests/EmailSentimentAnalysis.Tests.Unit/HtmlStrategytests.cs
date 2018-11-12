@@ -20,7 +20,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         [Fact]
         public void ShouldStripAllHtml()
         {
-            var repo = new DummySanitiserRepo();
+            var repo = new DummySanitiserRepo(1);
             var engine = new MailSanitiserEngine(_coreDependencies,repo);
             var result = engine.SanitiseContent(_emailHtmlContent, SanitiseContentType.Html);
 
@@ -51,7 +51,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         [Fact]
         public void ShouldStripAllButBodyElementFromEmailHtmlAndRemoveMarkup()
         {
-            var repo = new DummySanitiserRepo();
+            var repo = new DummySanitiserRepo(1);
             var engine = new MailSanitiserEngine(_coreDependencies, repo);
             var result = engine.SanitiseForAllContentTypes(_emailHtmlContent);
 

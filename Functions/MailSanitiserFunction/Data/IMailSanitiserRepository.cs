@@ -9,5 +9,7 @@ namespace MailSanitiserFunction.Data
     public interface IMailSanitiserRepository
     {
         Task LodgeMailSanitisedAcknowledgementAsync(GenericActionMessage receivedMessage);
+        Task<List<SanitisedMailMessageEntity>> GetCollectedMailAsync();
+        Task StoreSanitisedMailAsync(List<SanitisedMailMessageEntity> mail);
     }
 }
