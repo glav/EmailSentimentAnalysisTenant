@@ -56,7 +56,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
             var engine = new RemoveAllButBodyStrategy();
             var result = engine.SanitiseContent(content);
 
-            Assert.Equal("<p>this is my body</p>", result);
+            Assert.Equal("<body><p>this is my body</p></body>", result);
         }
 
         [Fact]
@@ -65,8 +65,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
             var engine = new RemoveAllButBodyStrategy();
             var result = engine.SanitiseContent(_emailHtmlContent);
 
-            Assert.DoesNotContain("<body",result.ToLowerInvariant());
-            Assert.DoesNotContain("</body", result.ToLowerInvariant());
+            Assert.True(result.IndexOf("<body") == 0);
         }
 
         [Fact]
