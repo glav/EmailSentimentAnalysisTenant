@@ -34,7 +34,7 @@ namespace MailSanitiserFunction
 
         public string SanitiseForAllContentTypes(string content)
         {
-            return SanitiseContent(content, SanitiseContentType.Html | SanitiseContentType.PlainText);
+            return SanitiseContent(content, SanitiseContentType.Html & SanitiseContentType.PlainText);
 
         }
 

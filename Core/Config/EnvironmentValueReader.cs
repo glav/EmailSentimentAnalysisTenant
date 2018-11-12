@@ -23,14 +23,14 @@ namespace Core.Config
             }
             foreach (var ev in environmentVariables)
             {
-                _logger.Verbose("Getting environment setting for: {ev}",ev);
+                _logger.Debug("Getting environment setting for: {ev}",ev);
                 var val = Environment.GetEnvironmentVariable(ev);
                 if (!string.IsNullOrWhiteSpace(val))
                 {
-                    _logger.Info("Found environment setting: {ev}",ev);
+                    _logger.Debug("Found environment setting: {ev}",ev);
                     return val;
                 }
-                _logger.Info($"Environment setting for: {ev} not present");
+                _logger.Debug($"Environment setting for: {ev} not present");
             }
             _logger.Info("No Environment settings found for: {environmentVariables}", environmentVariables);
             return defaultValue;

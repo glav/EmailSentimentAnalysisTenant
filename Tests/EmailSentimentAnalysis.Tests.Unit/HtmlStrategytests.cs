@@ -12,6 +12,14 @@ namespace EmailSentimentAnalysis.Tests.Unit
         private string _emailHtmlContent;
         private CoreDependencyInstances _coreDependencies;
 
+        const string _textContainsHtmlComment = "<!--/* Font Definitions */@font-face	{font-family:\"Cambria Math\";	panose-1:2 4 5 3 5 4 6 3 2 4;}" +
+            "@font-face	{font-family:Calibri;	panose-1:2 15 5 2 2 2 4 3 2 4;}/* Style Definitions */p.MsoNormal, li.MsoNormal, div.MsoNormal	{margin:0cm;	" +
+            "margin-bottom:.0001pt;	font-size:11.0pt;	font-family:\"Calibri\",sans-serif;	mso-fareast-language:EN-US;}a:link, span.MsoHyperlink	" +
+            "{mso-style-priority:99;	color:#0563C1;	text-decoration:underline;}a:visited, span.MsoHyperlinkFollowed	{mso-style-priority:99;	color:#954F72;	" +
+            "text-decoration:underline;}span.EmailStyle17	{mso-style-type:personal-compose;	font-family:\"Calibri\",sans-serif;}.MsoChpDefault	" +
+            "{mso-style-type:export-only;	font-family:\"Calibri\",sans-serif;	mso-fareast-language:EN-US;}@page WordSection1	{size:612.0pt 792.0pt;	" +
+            "margin:72.0pt 72.0pt 72.0pt 72.0pt;}div.WordSection1	{page:WordSection1;}-->This is yet another test";
+
         public HtmlStrategyTests()
         {
             _coreDependencies = CoreDependencies.Setup();
@@ -26,6 +34,17 @@ namespace EmailSentimentAnalysis.Tests.Unit
 
             Assert.False(result.Contains('<'));
             Assert.False(result.Contains('>'));
+        }
+
+        [Fact]
+        public void ShouldStripHtmlComments()
+        {
+            var repo = new DummySanitiserRepo(1);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var result = engine.SanitiseContent(_textContainsHtmlComment, SanitiseContentType.Html & SanitiseContentType.PlainText);
+
+            Assert.DoesNotContain("<!--",result);
+            Assert.DoesNotContain("-->", result);
         }
 
         [Fact]
