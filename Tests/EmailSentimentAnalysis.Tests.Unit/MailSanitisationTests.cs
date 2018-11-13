@@ -26,6 +26,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
 
             Assert.Equal(1, repo.MailCollectionCount);
             Assert.Equal(1, repo.StoreSanitisedMaiLCount);
+            Assert.Equal(1, repo.ClearedMailCount);
             Assert.Equal(1, repo.LodgeMailAcknowledgementCount);
             Assert.Equal(msg, repo.ActionMessageRecentlyLodged);
 
@@ -41,6 +42,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
 
             Assert.Equal(1, repo.MailCollectionCount);
             Assert.Equal(0, repo.StoreSanitisedMaiLCount);
+            Assert.Equal(0, repo.ClearedMailCount);
             Assert.Equal(0, repo.LodgeMailAcknowledgementCount);
 
         }

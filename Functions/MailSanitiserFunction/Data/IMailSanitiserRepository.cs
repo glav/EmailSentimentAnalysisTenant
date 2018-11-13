@@ -10,6 +10,7 @@ namespace MailSanitiserFunction.Data
     {
         Task LodgeMailSanitisedAcknowledgementAsync(GenericActionMessage receivedMessage);
         Task<List<SanitisedMailMessageEntity>> GetCollectedMailAsync();
+        Task ClearCollectedMailAsync();
         Task StoreSanitisedMailAsync(List<SanitisedMailMessageEntity> mail);
     }
 }

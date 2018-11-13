@@ -12,6 +12,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         private int _getCollectionCount;
         private int _lodgeMailAckCount;
         private int _storeSanitisedMailCount;
+        private int _clearedMailCount;
         private GenericActionMessage _actionMessageToLodge;
         private List<SanitisedMailMessageEntity> _dummyMail = new List<SanitisedMailMessageEntity>();
 
@@ -29,7 +30,14 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public int MailCollectionCount => _getCollectionCount;
         public int LodgeMailAcknowledgementCount => _lodgeMailAckCount;
         public int StoreSanitisedMaiLCount => _storeSanitisedMailCount;
+        public int ClearedMailCount => _clearedMailCount;
         public GenericActionMessage ActionMessageRecentlyLodged => _actionMessageToLodge;
+
+        public Task ClearCollectedMailAsync()
+        {
+            _clearedMailCount++;
+            return Task.FromResult(0);
+        }
 
         public Task<List<SanitisedMailMessageEntity>> GetCollectedMailAsync()
         {

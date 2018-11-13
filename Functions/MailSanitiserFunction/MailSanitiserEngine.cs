@@ -55,6 +55,7 @@ namespace MailSanitiserFunction
                     m.SanitisedBody = SanitiseForAllContentTypes(m.Body);
                 });
                 await _repository.StoreSanitisedMailAsync(mail);
+                await _repository.ClearCollectedMailAsync();
                 await _repository.LodgeMailSanitisedAcknowledgementAsync(receivedMessage);
             } catch (Exception ex)
             {

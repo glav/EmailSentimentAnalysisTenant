@@ -3,6 +3,7 @@ using Core.Data;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MailSanitiserFunction.Data
@@ -74,6 +75,44 @@ namespace MailSanitiserFunction.Data
             } while (continuationToken != null);
 
             return results;
+        }
+
+        public async Task ClearCollectedMailAsync()
+        {
+            Dependencies.DiagnosticLogging.Info("Sanitisation: Clearing/deleting mail records");
+
+            var results = new List<SanitisedMailMessageEntity>();
+            var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
+            var qry = new TableQuery<SanitisedMailMessageEntity>();
+            int recordsProcessed = 0;
+
+            TableContinuationToken continuationToken = null;
+            do
+            {
+                // Retrieve a segment (up to 1,000 entities).
+                var tableQueryResult =
+                    await tblRef.ExecuteQuerySegmentedAsync(qry, continuationToken);
+                continuationToken = tableQueryResult.ContinuationToken;
+
+                if (tableQueryResult.Results == null && tableQueryResult.Results.Count == 0)
+                {
+                    break;
+                }
+                var batchOp = new TableBatchOperation();
+                tableQueryResult.Results.ForEach(r =>
+                {
+                    var op = TableOperation.Delete(r);
+                    batchOp.Add(op);
+                });
+                var batchResults = await tblRef.ExecuteBatchAsync(batchOp);
+                if (batchResults.Any(b => b.HttpStatusCode >= 300))
+                {
+                    Dependencies.DiagnosticLogging.Error("Sanitisation: There were errors clearing the collected mail.");
+                }
+                recordsProcessed += tableQueryResult.Results.Count;
+
+            } while (continuationToken != null);
+            Dependencies.DiagnosticLogging.Info("Sanitisation: Cleared collected mail #{recordsProcessed} records deleted.", recordsProcessed);
         }
 
         public async Task LodgeMailSanitisedAcknowledgementAsync(GenericActionMessage receivedMessage)
