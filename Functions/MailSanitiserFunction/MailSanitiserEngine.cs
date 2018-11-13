@@ -40,7 +40,7 @@ namespace MailSanitiserFunction
 
         public async Task SanitiseMailAsync(GenericActionMessage receivedMessage)
         {
-            _coreDependencies.DiagnosticLogging.Info("SanitiseMail");
+            _coreDependencies.DiagnosticLogging.Info("SanitiseMail: Sanitise All Mail");
 
             try
             {

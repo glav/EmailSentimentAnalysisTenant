@@ -65,10 +65,10 @@ namespace MailSanitiserFunction.Data
                 continuationToken = tableQueryResult.ContinuationToken;
 
                 var recordsRead = tableQueryResult.Results.Count;
-                Dependencies.DiagnosticLogging.Info("Mail Records retrieved to sanitise: {recordsRead}", recordsRead);
+                Dependencies.DiagnosticLogging.Info("Sanitisation: Mail Records retrieved to sanitise: {recordsRead}", recordsRead);
                 if (continuationToken != null)
                 {
-                    Dependencies.DiagnosticLogging.Verbose("More mail records are in queue to be read");
+                    Dependencies.DiagnosticLogging.Verbose("Sanitisation: More mail records are in queue to be read");
                 }
                 results.AddRange(tableQueryResult.Results);
 

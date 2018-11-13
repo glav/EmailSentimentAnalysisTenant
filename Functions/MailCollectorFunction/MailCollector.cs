@@ -17,7 +17,7 @@ namespace MailCollectorFunction
         {
             var dependencies = CoreDependencies.Setup(log);
 
-            dependencies.DiagnosticLogging.Verbose($"MailCollector Queue trigger function executed at: {DateTime.UtcNow}");
+            dependencies.DiagnosticLogging.Verbose($"MailCollection: MailCollector Queue trigger function executed at: {DateTime.UtcNow}");
 
             var mailConfig = EmailConfiguration.PopulateConfigFromEnviromentVariables(dependencies);
             var engine = new CollectionEngine(dependencies,new MailCollectionRepository(dependencies), mailConfig);
