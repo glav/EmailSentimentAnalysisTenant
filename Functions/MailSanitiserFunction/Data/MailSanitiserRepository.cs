@@ -100,6 +100,7 @@ namespace MailSanitiserFunction.Data
                 }
                 tableQueryResult.Results.ForEach(async r =>
                 {
+                    r.ETag = "*";
                     var op = TableOperation.Delete(r);
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
