@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Core;
 using Core.Data;
+using MailProcessorFunction.Config;
 using MailProcessorFunction.Data;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
@@ -16,11 +17,12 @@ namespace MailProcessorFunction
         {
             var dependencies = CoreDependencies.Setup(log);
             var receivedMessage = GenericActionMessage.FromString(myQueueItem);
+            var analysisConfig = AnalysisConfiguration.PopulateConfigFromEnviromentVariables(dependencies);
 
             dependencies.DiagnosticLogging.Verbose($"MailProcessor: Timer trigger function executed at: {DateTime.UtcNow} UTC");
 
             var repo = new MailProcessorRepository(dependencies);
-            var engine = new MailProcessingEngine(dependencies, repo);
+            var engine = new MailProcessingEngine(dependencies, repo, analysisConfig);
             await engine.AnalyseAllMailAsync(receivedMessage);
 
         }

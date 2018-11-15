@@ -96,11 +96,13 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
   storage_connection_string = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
   version                   = "~2"
 
-  app_settings {
+  app_settings { 
     "FUNCTIONS_EXTENSION_VERSION"    = "~2"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
     "WEBSITE_RUN_FROM_ZIP" = "1"
     "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
+    "APIKey"                  = "${var.sentimement_api_key}"
+    "APILocation"             = "${var.sentiment_api_location}"
   }
 }
 

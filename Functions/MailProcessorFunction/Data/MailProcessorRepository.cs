@@ -46,6 +46,18 @@ namespace MailProcessorFunction.Data
             return results;
         }
 
+        public Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
+        {
+            Dependencies.DiagnosticLogging.Error("StoreAllAnalysedMailAsync not implemented");
+            return Task.FromResult(0);
+        }
+
+        public Task ClearSanitisedMailAsync()
+        {
+            Dependencies.DiagnosticLogging.Error("ClearSanitisedMailAsync not implemented");
+            return Task.FromResult(0);
+        }
+
         public async Task LodgeMailProcessorAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
             Dependencies.DiagnosticLogging.Debug("MailProcessor: Lodging Mail processed Acknowledgement");

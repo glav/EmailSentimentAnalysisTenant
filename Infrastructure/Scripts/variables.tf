@@ -52,6 +52,13 @@ variable "delete_mail_once_collected" {
 variable "max_emails_to_retrieve" {
   default = "10"
 }
+
+variable "sentimement_api_key" {
+}
+
+variable "sentiment_api_location" {
+}
+
 locals {
   queue_name = "${var.app}${var.environment}"
   resource_group_name = "${var.app}${var.environment}"

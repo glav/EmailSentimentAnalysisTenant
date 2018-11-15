@@ -20,23 +20,22 @@ namespace MailCollectorFunction.Config
         public static EmailConfiguration PopulateConfigFromEnviromentVariables(CoreDependencyInstances dependencies)
         {
             var mailConfig = new EmailConfiguration();
-            var envReader = new EnvironmentValueReader(dependencies.DiagnosticLogging);
 
 
-            mailConfig.PopServerHost = 
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname" });
+            mailConfig.PopServerHost =
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailhostname" });
             mailConfig.PopServerPort =
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995").ToInt();
-            mailConfig.Username = 
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusername" });
-            mailConfig.Password = 
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailpassword" });
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailport" }, "995").ToInt();
+            mailConfig.Username =
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusername" });
+            mailConfig.Password =
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailpassword" });
             mailConfig.UseSsl =
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusessl" }).ToBool();
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "popemailusessl" }).ToBool();
             mailConfig.DeleteMailFromServerOnceCollected =
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "deletemailfromServeroncecollected" }).ToBool();
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "deletemailfromServeroncecollected" }).ToBool();
             mailConfig.MaxEmailsToRetrieve =
-                envReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "maxemailstoretrieve" }, "10").ToInt();
+                dependencies.EnvironmentValueReader.GetEnvironmentValueThatIsNotEmpty(new string[] { "maxemailstoretrieve" }, "10").ToInt();
             return mailConfig;
         }
     }
