@@ -48,6 +48,7 @@ namespace MailSanitiserFunction
                 if (mail.Count == 0)
                 {
                     _coreDependencies.DiagnosticLogging.Info("SanitiseMail: Nothing to sanitise");
+                    await _repository.LodgeMailSanitisedAcknowledgementAsync(receivedMessage);
                     return;
                 }
                 mail.ForEach(m =>

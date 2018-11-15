@@ -37,6 +37,7 @@ namespace MailProcessorFunction
                 if (mail.Count == 0)
                 {
                     _coreDependencies.DiagnosticLogging.Info("ProcessMail: Nothing to process");
+                    await _repository.LodgeMailProcessorAcknowledgementAsync(receivedMessage);
                     return;
                 }
                 var apiKey = _config.ApiKey;
