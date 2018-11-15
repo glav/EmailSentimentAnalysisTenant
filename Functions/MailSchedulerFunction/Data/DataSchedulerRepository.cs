@@ -21,7 +21,7 @@ namespace MailSchedulerFunction.Data
             }
             catch (Exception ex)
             {
-                Dependencies.DiagnosticLogging.Error(ex, "Error clearing mail operation progress");
+                Dependencies.DiagnosticLogging.Error(ex, "MailScheduler: Error clearing mail operation progress");
             }
         }
 
@@ -42,7 +42,7 @@ namespace MailSchedulerFunction.Data
             try
             {
                 await queueRef.AddMessageAsync(GenericActionMessage.CreateNewQueueMessage());
-                Dependencies.DiagnosticLogging.Info("Email collection trigger message sent");
+                Dependencies.DiagnosticLogging.Verbose("MailScheduler: Email collection trigger message sent");
 
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
                 var op = TableOperation.Insert(new MailSchedulerEntity());
@@ -50,7 +50,7 @@ namespace MailSchedulerFunction.Data
             }
             catch (Exception ex)
             {
-                Dependencies.DiagnosticLogging.Error(ex, "Error setting mail operation progress");
+                Dependencies.DiagnosticLogging.Error(ex, "MailScheduler: Error setting mail operation progress");
             }
         }
 

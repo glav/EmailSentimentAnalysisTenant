@@ -17,19 +17,19 @@ namespace MailSchedulerFunction
 
         public async Task ScheduleMailCollectionIfNotInProgressAsync()
         {
-            _coreDependencies.DiagnosticLogging.Verbose("Attempting to schedule mail collection.");
+            _coreDependencies.DiagnosticLogging.Verbose("MailScheduler: Attempting to schedule mail collection.");
             try
             {
                 var mailProcessingInProgress = await _repository.IsMailOperationInProgressAsync();
                 if (mailProcessingInProgress)
                 {
-                    _coreDependencies.DiagnosticLogging.Info("Mail processing currently in progress, skipping mail collection");
+                    _coreDependencies.DiagnosticLogging.Debug("Mail processing currently in progress, skipping mail collection");
                     return;
                 }
             }
             catch (Exception ex)
             {
-                _coreDependencies.DiagnosticLogging.Error(ex, "Error checking if Mail Operation in progress");
+                _coreDependencies.DiagnosticLogging.Error(ex, "MailScheduler: Error checking if Mail Operation in progress");
             }
 
             _coreDependencies.DiagnosticLogging.Verbose("Mail processing not in progress, attempting to schedule mail collection");

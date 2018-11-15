@@ -48,13 +48,13 @@ namespace MailProcessorFunction.Data
 
         public Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
         {
-            Dependencies.DiagnosticLogging.Error("StoreAllAnalysedMailAsync not implemented");
+            Dependencies.DiagnosticLogging.Error("MailProcessor: StoreAllAnalysedMailAsync not implemented");
             return Task.FromResult(0);
         }
 
         public Task ClearSanitisedMailAsync()
         {
-            Dependencies.DiagnosticLogging.Error("ClearSanitisedMailAsync not implemented");
+            Dependencies.DiagnosticLogging.Error("MailProcessor: ClearSanitisedMailAsync not implemented");
             return Task.FromResult(0);
         }
 

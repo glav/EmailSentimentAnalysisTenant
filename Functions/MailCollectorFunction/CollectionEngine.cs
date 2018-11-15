@@ -23,7 +23,7 @@ namespace MailCollectorFunction
 
         public async Task PerformMailCollectionAsync(GenericActionMessage receivedMessage)
         {
-            _coreDependencies.DiagnosticLogging.Info("Performing Mail Collection:{0}", receivedMessage);
+            _coreDependencies.DiagnosticLogging.Verbose("MailCollection: Performing Mail Collection:{0}", receivedMessage);
 
             try
             {
@@ -31,16 +31,16 @@ namespace MailCollectorFunction
                 await _repository.StoreMailAsync(emails);
             } catch (Exception ex)
             {
-                _coreDependencies.DiagnosticLogging.Fatal(ex, "Error performing mail collection");
+                _coreDependencies.DiagnosticLogging.Fatal(ex, "MailCollection: Error performing mail collection");
             }
 
             try
             {
                 await _repository.LodgeMailCollectedAcknowledgementAsync(receivedMessage);
-                _coreDependencies.DiagnosticLogging.Info("Completed performing mail collection");
+                _coreDependencies.DiagnosticLogging.Debug("Completed performing mail collection");
             } catch (Exception ex)
             {
-                _coreDependencies.DiagnosticLogging.Fatal(ex, "Could not Lodge mail collection acknowledgement. Manual intervention required");
+                _coreDependencies.DiagnosticLogging.Fatal(ex, "MailCollection: Could not Lodge mail collection acknowledgement. Manual intervention required");
             }
 
             return;
