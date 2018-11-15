@@ -43,7 +43,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
             Assert.Equal(1, repo.MailCollectionCount);
             Assert.Equal(0, repo.StoreSanitisedMaiLCount);
             Assert.Equal(0, repo.ClearedMailCount);
-            Assert.Equal(0, repo.LodgeMailAcknowledgementCount);
+            Assert.Equal(1, repo.LodgeMailAcknowledgementCount); // need to ensure the ack is still sent
 
         }
 
