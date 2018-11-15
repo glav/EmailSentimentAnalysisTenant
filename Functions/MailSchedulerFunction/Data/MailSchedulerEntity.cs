@@ -13,6 +13,7 @@ namespace MailSchedulerFunction.Data
             PartitionKey = DataStores.Tables.SchedulerTablePartitionKey;
             RowKey = DataStores.Tables.SchedulerTableRowKey;
             TimeOfActionUtc = DateTime.UtcNow;
+            ETag = "*";
         }
         public DateTime TimeOfActionUtc { get; set; }
     }

@@ -16,7 +16,7 @@ namespace MailSchedulerFunction.Data
             try
             {
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameMailSchedulerStatus);
-                var op = TableOperation.Delete(new MailSchedulerEntity { ETag = "*" });
+                var op = TableOperation.Delete(new MailSchedulerEntity());
                 var result = await tblRef.ExecuteAsync(op);
             }
             catch (Exception ex)
