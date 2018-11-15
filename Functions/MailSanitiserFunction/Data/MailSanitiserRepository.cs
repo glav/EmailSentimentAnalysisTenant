@@ -98,18 +98,15 @@ namespace MailSanitiserFunction.Data
                 {
                     break;
                 }
-                var batchOp = new TableBatchOperation();
-                tableQueryResult.Results.ForEach(r =>
+                tableQueryResult.Results.ForEach(async r =>
                 {
                     var op = TableOperation.Delete(r);
-                    batchOp.Add(op);
+                    var result = await tblRef.ExecuteAsync(op);
+                    if (result.HttpStatusCode >= 300)
+                    {
+                        Dependencies.DiagnosticLogging.Error("Sanitisation: There were errors clearing the collected mail.");
+                    } else { recordsProcessed++;  }
                 });
-                var batchResults = await tblRef.ExecuteBatchAsync(batchOp);
-                if (batchResults.Any(b => b.HttpStatusCode >= 300))
-                {
-                    Dependencies.DiagnosticLogging.Error("Sanitisation: There were errors clearing the collected mail.");
-                }
-                recordsProcessed += tableQueryResult.Results.Count;
 
             } while (continuationToken != null);
             Dependencies.DiagnosticLogging.Info("Sanitisation: Cleared collected mail #{recordsProcessed} records deleted.", recordsProcessed);
@@ -117,7 +114,7 @@ namespace MailSanitiserFunction.Data
 
         public async Task LodgeMailSanitisedAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
-            Dependencies.DiagnosticLogging.Info("Lodging Mail Sanitised Acknowledgement");
+            Dependencies.DiagnosticLogging.Debug("Lodging Mail Sanitised Acknowledgement");
             var acct = CreateStorageAccountReference();
             var queueClient = acct.CreateCloudQueueClient();
             var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameProcessEmail);
