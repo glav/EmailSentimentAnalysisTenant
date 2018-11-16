@@ -47,8 +47,6 @@ namespace MailProcessorFunction.Data
 
         public async Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
         {
-            Dependencies.DiagnosticLogging.Error("MailProcessor: StoreAllAnalysedMailAsync not implemented");
-
             if (analysedMail == null || analysedMail.Count == 0)
             {
                 Dependencies.DiagnosticLogging.Info("MailProcessor: No analysed email to store, exiting.");
