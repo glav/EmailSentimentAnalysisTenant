@@ -79,49 +79,12 @@ namespace MailSanitiserFunction.Data
 
         public async Task ClearCollectedMailAsync()
         {
-            Dependencies.DiagnosticLogging.Info("Sanitisation: Clearing/deleting mail records");
-
-            var results = new List<SanitisedMailMessageEntity>();
-            var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
-            var qry = new TableQuery<SanitisedMailMessageEntity>();
-            int recordsProcessed = 0;
-
-            TableContinuationToken continuationToken = null;
-            do
-            {
-                // Retrieve a segment (up to 1,000 entities).
-                var tableQueryResult =
-                    await tblRef.ExecuteQuerySegmentedAsync(qry, continuationToken);
-                continuationToken = tableQueryResult.ContinuationToken;
-
-                if (tableQueryResult.Results == null && tableQueryResult.Results.Count == 0)
-                {
-                    break;
-                }
-                tableQueryResult.Results.ForEach(async r =>
-                {
-                    r.ETag = "*";
-                    var op = TableOperation.Delete(r);
-                    var result = await tblRef.ExecuteAsync(op);
-                    if (result.HttpStatusCode >= 300)
-                    {
-                        Dependencies.DiagnosticLogging.Error("Sanitisation: There were errors clearing the collected mail.");
-                    } else { recordsProcessed++;  }
-                });
-
-            } while (continuationToken != null);
-            Dependencies.DiagnosticLogging.Info("Sanitisation: Cleared collected mail #{recordsProcessed} records deleted.", recordsProcessed);
+            await ClearAllDataFromStorageAsync< SanitisedMailMessageEntity>(DataStores.Tables.TableNameCollectMail, "Sanitisation");
         }
 
         public async Task LodgeMailSanitisedAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
-            Dependencies.DiagnosticLogging.Debug("Lodging Mail Sanitised Acknowledgement");
-            var acct = CreateStorageAccountReference();
-            var queueClient = acct.CreateCloudQueueClient();
-            var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameProcessEmail);
-            var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
-            await queueRef.AddMessageAsync(msg);
-            Dependencies.DiagnosticLogging.Info("Mail Sanitised Acknowledgement lodged.");
+            await LodgeAcknowledgementMessageAsync(receivedMessage, "Sanitisation", DataStores.Queues.QueueNameProcessEmail);
         }
     }
 }

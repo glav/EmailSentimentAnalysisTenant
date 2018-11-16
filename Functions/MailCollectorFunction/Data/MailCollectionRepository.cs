@@ -120,13 +120,7 @@ namespace MailCollectorFunction.Data
 
         public async Task LodgeMailCollectedAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
-            Dependencies.DiagnosticLogging.Verbose("MailCollection: Lodging Mail Collected Acknowledgement");
-            var acct = CreateStorageAccountReference();
-            var queueClient = acct.CreateCloudQueueClient();
-            var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameCleanEmail);
-            var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
-            await queueRef.AddMessageAsync(msg);
-            Dependencies.DiagnosticLogging.Info("MailCollection: Mail Collected Acknowledgement lodged.");
+            await LodgeAcknowledgementMessageAsync(receivedMessage, "MailCollection", DataStores.Queues.QueueNameCleanEmail);
         }
 
     }

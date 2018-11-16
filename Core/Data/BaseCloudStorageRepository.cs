@@ -4,6 +4,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.Data
 {
@@ -21,6 +22,44 @@ namespace Core.Data
             return client.GetTableReference(tableName);
         }
 
+        protected async Task ClearAllDataFromStorageAsync<T>(string tableName, string processName) where T : TableEntity, new()
+        {
+            Dependencies.DiagnosticLogging.Info($"{processName}: Clearing/deleting records");
+
+            var results = new List<T>();
+            var tblRef = CreateClientTableReference(tableName);
+            var qry = new TableQuery<T>();
+            int recordsProcessed = 0;
+
+            TableContinuationToken continuationToken = null;
+            do
+            {
+                // Retrieve a segment (up to 1,000 entities).
+                var tableQueryResult =
+                    await tblRef.ExecuteQuerySegmentedAsync(qry, continuationToken);
+                continuationToken = tableQueryResult.ContinuationToken;
+
+                if (tableQueryResult.Results == null && tableQueryResult.Results.Count == 0)
+                {
+                    break;
+                }
+                tableQueryResult.Results.ForEach(async r =>
+                {
+                    r.ETag = "*";
+                    var op = TableOperation.Delete(r);
+                    var result = await tblRef.ExecuteAsync(op);
+                    if (result.HttpStatusCode >= 300)
+                    {
+                        Dependencies.DiagnosticLogging.Error($"{processName}: There were errors clearing records from storage table: {tableName} .");
+                    }
+                    else { recordsProcessed++; }
+                });
+
+            } while (continuationToken != null);
+            Dependencies.DiagnosticLogging.Info($"{processName}: Cleared records from storage table {tableName} #{recordsProcessed} removed.");
+        }
+
+
         protected CloudStorageAccount CreateStorageAccountReference()
         {
             CloudStorageAccount cloudAcct;
@@ -35,6 +74,18 @@ namespace Core.Data
             return cloudAcct;
 
         }
+
+        protected async Task LodgeAcknowledgementMessageAsync(GenericActionMessage receivedMessage, string processName, string queueName)
+        {
+            Dependencies.DiagnosticLogging.Debug($"{processName}: Lodging acknowledgement message");
+            var acct = CreateStorageAccountReference();
+            var queueClient = acct.CreateCloudQueueClient();
+            var queueRef = queueClient.GetQueueReference(queueName);
+            var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
+            await queueRef.AddMessageAsync(msg);
+            Dependencies.DiagnosticLogging.Info($"{processName}: Acknowledgement message lodged.");
+        }
+
 
     }
 }

@@ -35,7 +35,7 @@ namespace MailProcessorFunction.Data
                 Dependencies.DiagnosticLogging.Debug("MailProcessor: Mail Records retrieved to analyse: {recordsRead}", recordsRead);
                 if (continuationToken != null)
                 {
-                    Dependencies.DiagnosticLogging.Verbose("More mail records are in queue to be read");
+                    Dependencies.DiagnosticLogging.Verbose("MailProcessor: More mail records are in queue to be read");
                 }
                 results.AddRange(tableQueryResult.Results);
 
@@ -52,21 +52,14 @@ namespace MailProcessorFunction.Data
             return Task.FromResult(0);
         }
 
-        public Task ClearSanitisedMailAsync()
+        public async Task ClearSanitisedMailAsync()
         {
-            Dependencies.DiagnosticLogging.Error("MailProcessor: ClearSanitisedMailAsync not implemented");
-            return Task.FromResult(0);
+            await ClearAllDataFromStorageAsync<AnalysedMailMessageEntity>(DataStores.Tables.TableNameSanitisedMail, "MailProcessor");
         }
 
         public async Task LodgeMailProcessorAcknowledgementAsync(GenericActionMessage receivedMessage)
         {
-            Dependencies.DiagnosticLogging.Debug("MailProcessor: Lodging Mail processed Acknowledgement");
-            var acct = CreateStorageAccountReference();
-            var queueClient = acct.CreateCloudQueueClient();
-            var queueRef = queueClient.GetQueueReference(DataStores.Queues.QueueNameTriggerEmail);
-            var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
-            await queueRef.AddMessageAsync(msg);
-            Dependencies.DiagnosticLogging.Info("MailProcessor: Mail processor acknowledgement lodged.");
+            await LodgeAcknowledgementMessageAsync(receivedMessage, "MailProcessor", DataStores.Queues.QueueNameTriggerEmail);
         }
     }
 }
