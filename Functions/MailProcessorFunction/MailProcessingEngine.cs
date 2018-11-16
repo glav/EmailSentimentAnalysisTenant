@@ -40,21 +40,8 @@ namespace MailProcessorFunction
                     await _repository.LodgeMailProcessorAcknowledgementAsync(receivedMessage);
                     return;
                 }
-                var apiKey = _config.ApiKey;
-                var location = _config.ApiLocation;
 
-                mail.ForEach(async m =>
-                {
-                    var result = await TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys(apiKey, location)
-                        .AddCustomDiagnosticLogging(new SentimentAnalysisLoggingAdapter(_coreDependencies))
-                        .UsingHttpCommunication()
-                        .WithTextAnalyticAnalysisActions()
-                        .AddSentimentAnalysis(m.SanitisedBody)
-                        .AddKeyPhraseAnalysis(m.SanitisedBody)
-                        .AnalyseAllAsync();
-                    m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
-                    m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData.documents.First().keyPhrases);
-                });
+                await AnalyseAllMail(mail);
                 await _repository.StoreAllAnalysedMailAsync(mail);
                 await _repository.ClearSanitisedMailAsync();
                 await _repository.LodgeMailProcessorAcknowledgementAsync(receivedMessage);
@@ -73,10 +60,21 @@ namespace MailProcessorFunction
                 return;
             }
 
-            mailToAnalyse.ForEach(m =>
+            var apiKey = _config.ApiKey;
+            var location = _config.ApiLocation;
+
+            foreach (var m in mailToAnalyse)
             {
-                //var results = TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys()
-            });
+                var result = await TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys(apiKey, location)
+                    .AddCustomDiagnosticLogging(new SentimentAnalysisLoggingAdapter(_coreDependencies))
+                    .UsingHttpCommunication()
+                    .WithTextAnalyticAnalysisActions()
+                    .AddSentimentAnalysis(m.SanitisedBody)
+                    .AddKeyPhraseAnalysis(m.SanitisedBody)
+                    .AnalyseAllAsync();
+                m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
+                m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData.documents.First().keyPhrases);
+            }
         }
     }
 }

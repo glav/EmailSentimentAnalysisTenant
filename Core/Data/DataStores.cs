@@ -19,6 +19,7 @@ namespace Core.Data
             public const string TableNameCollectMail = "EmailSentimentCollectMail";
             public const string TableNameSanitisedMail = "EmailSentimentSanitisedMail";
             public const string TableNameMailSchedulerStatus = "EmailSentimentMailSchedulerStatus";
+            public const string TableNameProcessed = "EmailSentimentMailProcessed";
 
             // Please ensure that any table names added as constants above are also added to this list 
             // to ensure they get created by infra process.
@@ -26,7 +27,8 @@ namespace Core.Data
             {
                 TableNameCollectMail,
                 TableNameMailSchedulerStatus,
-                TableNameSanitisedMail
+                TableNameSanitisedMail,
+                TableNameProcessed
             }; 
 
             public const string SchedulerTablePartitionKey = "MailSchedulerPartitionKey";

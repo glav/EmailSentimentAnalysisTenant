@@ -3,7 +3,6 @@ using Core.Data;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MailProcessorFunction.Data
@@ -46,10 +45,41 @@ namespace MailProcessorFunction.Data
             return results;
         }
 
-        public Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
+        public async Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
         {
             Dependencies.DiagnosticLogging.Error("MailProcessor: StoreAllAnalysedMailAsync not implemented");
-            return Task.FromResult(0);
+
+            if (analysedMail == null || analysedMail.Count == 0)
+            {
+                Dependencies.DiagnosticLogging.Info("MailProcessor: No analysed email to store, exiting.");
+                return;
+            }
+            var numMsgs = analysedMail.Count;
+            try
+            {
+                Dependencies.DiagnosticLogging.Verbose($"MailProcessor: {numMsgs} mail messages to store.");
+                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameProcessed);
+
+                foreach (var m in analysedMail)
+                {
+                    var op = TableOperation.Insert(m);
+                    var result = await tblRef.ExecuteAsync(op);
+                    if (result.HttpStatusCode >= 300)
+                    {
+                        Dependencies.DiagnosticLogging.Error($"MailProcessor: Unable to write analysed messages to table storage status code: {result.HttpStatusCode}");
+                    }
+                }
+                Dependencies.DiagnosticLogging.Info("MailProcessor: Analysed messages stored: #{numMsgs}", numMsgs);
+            }
+            catch (Exception ex)
+            {
+                Dependencies.DiagnosticLogging.Error(ex, "MailProcessor: Error storing analysed mail list");
+                var baseEx = ex.GetBaseException();
+                if (baseEx != null)
+                {
+                    Dependencies.DiagnosticLogging.Error(baseEx, "MailProcessor: Error storing analysed mail list (Inner/base error)");
+                }
+            }
         }
 
         public async Task ClearSanitisedMailAsync()
