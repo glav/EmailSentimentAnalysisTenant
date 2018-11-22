@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MailProcessorFunction.Data
+namespace QueryMailApiFunction.Data
 {
-    public class AnalysedMailMessageEntity : TableEntity
+    public class MailSentimentMessageEntity : TableEntity
     {
-        public AnalysedMailMessageEntity() : base()
+        public MailSentimentMessageEntity() : base()
         {
             FromAddresses = new List<RawEmailAddress>();
             ToAddresses = new List<RawEmailAddress>();

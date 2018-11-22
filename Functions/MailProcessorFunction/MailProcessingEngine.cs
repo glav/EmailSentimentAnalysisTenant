@@ -74,6 +74,7 @@ namespace MailProcessorFunction
                     .AnalyseAllAsync();
                 m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
                 m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData.documents.First().keyPhrases);
+                m.AnalysedTimestampUtc = DateTime.UtcNow;
             }
         }
     }
