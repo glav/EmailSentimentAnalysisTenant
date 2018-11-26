@@ -10,7 +10,7 @@ namespace MailProcessorFunction.Data
     {
         Task LodgeMailProcessorAcknowledgementAsync(GenericActionMessage receivedMessage);
         Task<List<AnalysedMailMessageEntity>> GetSanitisedMailAsync();
-        Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail);
+        Task<bool> StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail);
         Task ClearSanitisedMailAsync();
     }
 }

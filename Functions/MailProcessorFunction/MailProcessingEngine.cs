@@ -42,8 +42,11 @@ namespace MailProcessorFunction
                 }
 
                 await AnalyseAllMail(mail);
-                await _repository.StoreAllAnalysedMailAsync(mail);
-                await _repository.ClearSanitisedMailAsync();
+                var success = await _repository.StoreAllAnalysedMailAsync(mail);
+                if (success)
+                {
+                    await _repository.ClearSanitisedMailAsync();
+                }
                 await _repository.LodgeMailProcessorAcknowledgementAsync(receivedMessage);
             }
             catch (Exception ex)

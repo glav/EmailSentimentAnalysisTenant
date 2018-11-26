@@ -46,22 +46,22 @@ namespace MailProcessorFunction.Data
             return results;
         }
 
-        public async Task StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
+        public async Task<bool> StoreAllAnalysedMailAsync(List<AnalysedMailMessageEntity> analysedMail)
         {
             if (analysedMail == null || analysedMail.Count == 0)
             {
                 Dependencies.DiagnosticLogging.Info("MailProcessor: No analysed email to store, exiting.");
-                return;
+                return true;
             }
             var numMsgs = analysedMail.Count;
             try
             {
                 Dependencies.DiagnosticLogging.Verbose($"MailProcessor: {numMsgs} mail messages to store.");
-                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameProcessed);
+                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameProcessedMail);
 
                 foreach (var m in analysedMail)
                 {
-                    m.PrimaryFromAddress = m.FromAddresses.First();
+                    m.PrimaryFromAddress = m.FromAddresses.FirstOrDefault();
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
@@ -70,6 +70,7 @@ namespace MailProcessorFunction.Data
                     }
                 }
                 Dependencies.DiagnosticLogging.Info("MailProcessor: Analysed messages stored: #{numMsgs}", numMsgs);
+                return true;
             }
             catch (Exception ex)
             {
@@ -80,6 +81,7 @@ namespace MailProcessorFunction.Data
                     Dependencies.DiagnosticLogging.Error(baseEx, "MailProcessor: Error storing analysed mail list (Inner/base error)");
                 }
             }
+            return false;
         }
 
         public async Task ClearSanitisedMailAsync()

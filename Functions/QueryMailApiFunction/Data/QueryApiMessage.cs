@@ -10,8 +10,9 @@ namespace QueryMailApiFunction.Data
     {
         public List<RawEmailAddress> FromAddresses { get; set; }
         public List<RawEmailAddress> ToAddresses { get; set; }
+        public string PrimaryFromAddress { get; set; }
         public string Subject { get; set; }
-        public string Body { get; set; }
+        public string OrignalBody { get; set; }
         public string SanitisedBody { get; set; }
         public double SentimentClassification { get; set; }
         public string SentimentKeyPhrases { get; set; }
