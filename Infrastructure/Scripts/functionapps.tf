@@ -106,6 +106,23 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
   }
 }
 
+resource "azurerm_function_app" "EmailSentimentQueryApiFuncApp" {
+  name                      = "query-api-function-${var.environment}"
+  resource_group_name       = "${azurerm_resource_group.EmailSentiment.name}"
+  location                  = "${var.location}"
+  app_service_plan_id       = "${azurerm_app_service_plan.EmailSentiment.id}"
+  storage_connection_string = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
+  version                   = "~2"
+
+  app_settings {
+    "FUNCTIONS_EXTENSION_VERSION"    = "~2"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
+    "WEBSITE_RUN_FROM_ZIP" = "1"
+    "StorageConnectionString" = "${azurerm_storage_account.EmailSentiment.primary_connection_string}"
+  }
+}
+
+
 
 output "instrumentation_key" {
   value = "${azurerm_application_insights.EmailSentimentMetrics.instrumentation_key}"
