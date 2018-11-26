@@ -107,7 +107,7 @@ resource "azurerm_function_app" "EmailSentimentProcessMailFuncApp" {
 }
 
 resource "azurerm_function_app" "EmailSentimentQueryApiFuncApp" {
-  name                      = "query-api-function-${var.environment}"
+  name                      = "querymailsentiment-api-function-${var.environment}"
   resource_group_name       = "${azurerm_resource_group.EmailSentiment.name}"
   location                  = "${var.location}"
   app_service_plan_id       = "${azurerm_app_service_plan.EmailSentiment.id}"
