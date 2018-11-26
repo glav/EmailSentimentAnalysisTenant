@@ -11,7 +11,6 @@ namespace MailProcessorFunction.Data
         {
             FromAddresses = new List<RawEmailAddress>();
             ToAddresses = new List<RawEmailAddress>();
-            PartitionKey = DateTime.UtcNow.ToString("o");
             AnalysedTimestampUtc = DateTime.UtcNow;
         }
         public List<RawEmailAddress> FromAddresses { get; set; }
