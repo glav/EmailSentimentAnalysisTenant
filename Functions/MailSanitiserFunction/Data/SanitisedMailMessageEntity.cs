@@ -11,7 +11,7 @@ namespace MailSanitiserFunction.Data
         {
             FromAddresses = new List<RawEmailAddress>();
             ToAddresses = new List<RawEmailAddress>();
-            PartitionKey = Guid.NewGuid().ToString();
+            PartitionKey = DateTime.UtcNow.ToString("o");
         }
         public List<RawEmailAddress> FromAddresses { get; set; }
         public List<RawEmailAddress> ToAddresses { get; set; }
