@@ -18,7 +18,7 @@ namespace MailSanitiserFunction.Data
         {
             if (mail == null || mail.Count == 0)
             {
-                Dependencies.DiagnosticLogging.Error("Sanitisation: No mail to store.");
+                Dependencies.DiagnosticLogging.Warning("Sanitisation: No mail to store.");
             }
             var numMsgs = mail.Count;
             try

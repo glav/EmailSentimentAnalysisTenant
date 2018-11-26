@@ -59,6 +59,12 @@ variable "sentimement_api_key" {
 variable "sentiment_api_location" {
 }
 
+variable "cognitive_service_tier_sku_name" {
+}
+
+variable "cognitive_service_tier_sku_tier" {
+}
+
 locals {
   queue_name = "${var.app}${var.environment}"
   resource_group_name = "${var.app}${var.environment}"
