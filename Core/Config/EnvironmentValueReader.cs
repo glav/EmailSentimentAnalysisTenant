@@ -30,7 +30,7 @@ namespace Core.Config
                     _logger.Debug("Found environment setting: {ev}",ev);
                     return val;
                 }
-                _logger.Debug($"Environment setting for: {ev} not present");
+                _logger.Debug("Environment setting for: {ev} not present",ev);
             }
             _logger.Info("No Environment settings found for: {environmentVariables}", environmentVariables);
             return defaultValue;

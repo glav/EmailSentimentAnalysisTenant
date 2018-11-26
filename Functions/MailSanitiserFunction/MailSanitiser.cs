@@ -16,7 +16,8 @@ namespace MailSanitiserFunction
             var dependencies = CoreDependencies.Setup(log);
             var receivedMessage = GenericActionMessage.FromString(myQueueItem);
 
-            dependencies.DiagnosticLogging.Verbose($"Sanitisation: MailSanitiser Timer trigger function executed at: {DateTime.UtcNow} UTC");
+            var now = DateTime.UtcNow;
+            dependencies.DiagnosticLogging.Verbose("Sanitisation: MailSanitiser Timer trigger function executed at: {now} UTC",now);
 
             var repo = new MailSanitiserRepository(dependencies);
             var engine = new MailSanitiserEngine(dependencies, repo);

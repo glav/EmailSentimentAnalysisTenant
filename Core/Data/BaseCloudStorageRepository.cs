@@ -56,7 +56,7 @@ namespace Core.Data
                 });
 
             } while (continuationToken != null);
-            Dependencies.DiagnosticLogging.Info($"{processName}: Cleared records from storage table {tableName} #{recordsProcessed} removed.");
+            Dependencies.DiagnosticLogging.Info($"{processName}: Cleared records from storage table {tableName}");
         }
 
 

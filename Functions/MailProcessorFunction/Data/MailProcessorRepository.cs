@@ -56,7 +56,7 @@ namespace MailProcessorFunction.Data
             var numMsgs = analysedMail.Count;
             try
             {
-                Dependencies.DiagnosticLogging.Verbose($"MailProcessor: {numMsgs} mail messages to store.");
+                Dependencies.DiagnosticLogging.Verbose("MailProcessor: {numMsgs} mail messages to store.",numMsgs);
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameProcessedMail);
 
                 foreach (var m in analysedMail)
@@ -64,9 +64,10 @@ namespace MailProcessorFunction.Data
                     m.PrimaryFromAddress = m.FromAddresses.FirstOrDefault();
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
-                    if (result.HttpStatusCode >= 300)
+                    var resultCode = result.HttpStatusCode;
+                    if (resultCode >= 300)
                     {
-                        Dependencies.DiagnosticLogging.Error($"MailProcessor: Unable to write analysed messages to table storage status code: {result.HttpStatusCode}");
+                        Dependencies.DiagnosticLogging.Error("MailProcessor: Unable to write analysed messages to table storage status code: {resultCode}",resultCode);
                     }
                 }
                 Dependencies.DiagnosticLogging.Info("MailProcessor: Analysed messages stored: #{numMsgs}", numMsgs);

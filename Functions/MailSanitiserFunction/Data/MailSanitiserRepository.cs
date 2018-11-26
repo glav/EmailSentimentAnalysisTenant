@@ -23,7 +23,7 @@ namespace MailSanitiserFunction.Data
             var numMsgs = mail.Count;
             try
             {
-                Dependencies.DiagnosticLogging.Verbose($"Sanitisation: {numMsgs} mail messages to store.");
+                Dependencies.DiagnosticLogging.Verbose("Sanitisation: {numMsgs} mail messages to store.",numMsgs);
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameSanitisedMail);
 
                 foreach (var m in mail)

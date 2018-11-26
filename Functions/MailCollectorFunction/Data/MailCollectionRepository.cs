@@ -29,7 +29,7 @@ namespace MailCollectorFunction.Data
             var numMsgs = mailList.Count;
             try
             {
-                Dependencies.DiagnosticLogging.Verbose($"MailCollection: {numMsgs} mail messages to store.");
+                Dependencies.DiagnosticLogging.Verbose("MailCollection: {numMsgs} mail messages to store.",numMsgs);
                 var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
 
                 foreach (var m in mailList)
@@ -58,7 +58,7 @@ namespace MailCollectorFunction.Data
         {
             var emailsRetrieved = new List<RawMailMessageEntity>();
             var emailsOnServer = new List<MimeMessage>();
-            Dependencies.DiagnosticLogging.Verbose($"MailCollection: Attempting to collect a maximum of {emailConfig.MaxEmailsToRetrieve} emails");
+            Dependencies.DiagnosticLogging.Verbose("MailCollection: Attempting to collect a maximum of {maxEmails} emails", emailConfig.MaxEmailsToRetrieve);
 
             try
             {
@@ -114,7 +114,7 @@ namespace MailCollectorFunction.Data
             emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
             await emailClient.ConnectAsync(emailConfig.PopServerHost, emailConfig.PopServerPort, SecureSocketOptions.Auto);
             emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-            Dependencies.DiagnosticLogging.Verbose($"MailCollection: Authenticating to email server {emailServerInfo}, : Username: [{emailConfig.Username}]");
+            Dependencies.DiagnosticLogging.Verbose("MailCollection: Authenticating to email server {emailServerInfo}, : Username: [{Username}]", emailServerInfo, emailConfig.Username);
             await emailClient.AuthenticateAsync(emailConfig.Username, emailConfig.Password);
         }
 

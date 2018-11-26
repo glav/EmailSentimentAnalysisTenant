@@ -19,7 +19,8 @@ namespace MailProcessorFunction
             var receivedMessage = GenericActionMessage.FromString(myQueueItem);
             var analysisConfig = AnalysisConfiguration.PopulateConfigFromEnviromentVariables(dependencies);
 
-            dependencies.DiagnosticLogging.Verbose($"MailProcessor: Timer trigger function executed at: {DateTime.UtcNow} UTC");
+            var now = DateTime.UtcNow;
+            dependencies.DiagnosticLogging.Verbose("MailProcessor: Timer trigger function executed at: {now} UTC",now);
 
             var repo = new MailProcessorRepository(dependencies);
             var engine = new MailProcessingEngine(dependencies, repo, analysisConfig);

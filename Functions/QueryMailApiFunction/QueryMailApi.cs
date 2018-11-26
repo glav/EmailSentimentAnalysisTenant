@@ -19,7 +19,7 @@ namespace QueryMailApiFunction
         {
             var coreDependencies = CoreDependencies.Setup(log);
 
-            coreDependencies.DiagnosticLogging.Verbose($"QueryMail: HTTP trigger function executed at: {DateTime.UtcNow} UTC");
+            coreDependencies.DiagnosticLogging.Verbose("QueryMail: HTTP trigger function executed at: {Now} UTC", DateTime.UtcNow);
 
             // Setup dependencies and invoke main processing component.
             var engine = new QueryEngine(coreDependencies, new QueryApiRepository(coreDependencies));

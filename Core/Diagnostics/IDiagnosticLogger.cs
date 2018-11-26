@@ -7,12 +7,14 @@ namespace EmailSentimentAnalysis.Core
         void Verbose(string message);
         void Info(string message);
         void Debug(string message);
+        void Warning(string message);
         void Error(string message);
         void Fatal(string message);
 
         void Verbose(string messageTemplate, params object[] args);
         void Info(string messageTemplate, params object[] args);
         void Debug(string messageTemplate, params object[] args);
+        void Warning(string messageTemplate, params object[] args);
         void Error(string messageTemplate, params object[] args);
         void Fatal(string messageTemplate, params object[] args);
 

@@ -15,7 +15,8 @@ namespace MailSchedulerFunction
         {
             var coreDependencies = CoreDependencies.Setup(log);
 
-            coreDependencies.DiagnosticLogging.Verbose($"MailScheduler: Timer trigger function executed at: {DateTime.UtcNow} UTC");
+            var now = DateTime.UtcNow;
+            coreDependencies.DiagnosticLogging.Verbose("MailScheduler: Timer trigger function executed at: {now} UTC",now);
 
             // Setup dependencies and invoke main processing component.
             var engine = new SchedulingEngine(coreDependencies, new DataSchedulerRepository(coreDependencies));

@@ -137,5 +137,15 @@ namespace EmailSentimentAnalysis.Core
         {
             _logger.Verbose(messageTemplate, args);
         }
+
+        public void Warning(string message)
+        {
+            _logger.Warning(message);
+        }
+
+        public void Warning(string messageTemplate, params object[] args)
+        {
+            _logger.Warning(messageTemplate, args);
+        }
     }
 }
