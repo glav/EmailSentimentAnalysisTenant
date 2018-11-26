@@ -15,6 +15,7 @@ namespace MailProcessorFunction.Data
         }
         public List<RawEmailAddress> FromAddresses { get; set; }
         public List<RawEmailAddress> ToAddresses { get; set; }
+        public RawEmailAddress PrimaryFromAddress { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public string SanitisedBody { get; set; }

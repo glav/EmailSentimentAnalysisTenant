@@ -3,6 +3,7 @@ using Core.Data;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MailProcessorFunction.Data
@@ -60,6 +61,7 @@ namespace MailProcessorFunction.Data
 
                 foreach (var m in analysedMail)
                 {
+                    m.PrimaryFromAddress = m.FromAddresses.First();
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
