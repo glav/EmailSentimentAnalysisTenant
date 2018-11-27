@@ -78,6 +78,7 @@ namespace MailCollectorFunction.Data
                     }
                     emailsOnServer.AddRange(await emailClient.GetMessagesAsync(0, msgCountToCollect));
                     await DeleteMessagesIfRequired(emailConfig, emailClient, msgCountToCollect);
+                    await emailClient.DisconnectAsync(true);
 
                     var cnt = emailsOnServer.Count;
                     Dependencies.DiagnosticLogging.Info("MailCollection: Collected {cnt} emails from server.", cnt);
@@ -101,7 +102,6 @@ namespace MailCollectorFunction.Data
                 {
                     await emailClient.DeleteMessagesAsync(0, msgCountToCollect);
                 }
-                await emailClient.DisconnectAsync(true);
             }
             catch (Exception ex)
             {

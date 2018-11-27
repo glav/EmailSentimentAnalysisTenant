@@ -19,7 +19,7 @@ namespace MailCollectorFunction.Data
 
     }
 
-    public class RawEmailAddress
+    public class RawEmailAddress : TableEntity
     {
         public string Address { get; set; }
         public string Name { get; set; }
