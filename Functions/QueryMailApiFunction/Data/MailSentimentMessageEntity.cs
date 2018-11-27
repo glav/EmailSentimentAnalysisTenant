@@ -9,13 +9,10 @@ namespace QueryMailApiFunction.Data
     {
         public MailSentimentMessageEntity() : base()
         {
-            FromAddresses = new List<RawEmailAddress>();
-            ToAddresses = new List<RawEmailAddress>();
-            PartitionKey = DateTime.UtcNow.ToString("o");
             AnalysedTimestampUtc = DateTime.UtcNow;
         }
-        public List<RawEmailAddress> FromAddresses { get; set; }
-        public List<RawEmailAddress> ToAddresses { get; set; }
+        public string FromAddresses { get; set; }
+        public string ToAddresses { get; set; }
         public string PrimaryFromAddress { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
@@ -26,9 +23,4 @@ namespace QueryMailApiFunction.Data
 
     }
 
-    public class RawEmailAddress
-    {
-        public string Address { get; set; }
-        public string Name { get; set; }
-    }
 }

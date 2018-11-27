@@ -17,8 +17,17 @@ namespace MailCollectorFunction.Extensions
                 Body = !string.IsNullOrEmpty(mimeMsg.HtmlBody) ? mimeMsg.HtmlBody : mimeMsg.TextBody,
                 Subject = mimeMsg.Subject
             };
-            msgEntity.ToAddresses.AddRange(mimeMsg.To.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
-            msgEntity.FromAddresses.AddRange(mimeMsg.From.Select(x => (MailboxAddress)x).Select(x => new RawEmailAddress { Address = x.Address, Name = x.Name }));
+            if (mimeMsg.To.Count > 0)
+            {
+                var toList = mimeMsg.To.Select(x => (MailboxAddress)x).Select(x => $"{x.Address}<{x.Name}>").ToArray();
+                msgEntity.ToAddresses = string.Join(";", toList);
+            }
+               
+            if (mimeMsg.From.Count > 0)
+            {
+                var fromList = mimeMsg.From.Select(x => (MailboxAddress)x).Select(x => $"{x.Address}<{x.Name}>");
+                msgEntity.FromAddresses = string.Join(";", fromList);
+            }
             msgEntity.RowKey = (long.MaxValue - DateTime.UtcNow.Ticks).ToString().PadLeft(20, '0');
             msgEntity.PartitionKey = DateTime.UtcNow.DayOfYear.ToString().PadLeft(20, '0'); 
 

@@ -61,7 +61,6 @@ namespace MailProcessorFunction.Data
 
                 foreach (var m in analysedMail)
                 {
-                    m.PrimaryFromAddress = m.FromAddresses.FirstOrDefault();
                     var op = TableOperation.Insert(m);
                     var result = await tblRef.ExecuteAsync(op);
                     var resultCode = result.HttpStatusCode;

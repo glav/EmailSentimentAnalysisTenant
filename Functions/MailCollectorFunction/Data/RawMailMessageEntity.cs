@@ -9,20 +9,13 @@ namespace MailCollectorFunction.Data
     {
         public RawMailMessageEntity() : base()
         {
-            FromAddresses = new List<RawEmailAddress>();
-            ToAddresses = new List<RawEmailAddress>();
         }
-        public List<RawEmailAddress> FromAddresses { get; set; }
-        public List<RawEmailAddress> ToAddresses { get; set; }
+        public string FromAddresses { get; set; }
+        public string ToAddresses { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
 
     }
 
-    public class RawEmailAddress : TableEntity
-    {
-        public string Address { get; set; }
-        public string Name { get; set; }
-    }
 
 }

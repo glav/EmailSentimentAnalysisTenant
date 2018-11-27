@@ -8,8 +8,8 @@ namespace QueryMailApiFunction.Data
 {
     public class QueryApiMessage
     {
-        public List<RawEmailAddress> FromAddresses { get; set; }
-        public List<RawEmailAddress> ToAddresses { get; set; }
+        public string FromAddresses { get; set; }
+        public string ToAddresses { get; set; }
         public string PrimaryFromAddress { get; set; }
         public string Subject { get; set; }
         public string OrignalBody { get; set; }
