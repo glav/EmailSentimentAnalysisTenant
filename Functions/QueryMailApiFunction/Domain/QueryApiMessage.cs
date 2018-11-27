@@ -10,7 +10,6 @@ namespace QueryMailApiFunction.Domain
     {
         public string FromAddresses { get; set; }
         public string ToAddresses { get; set; }
-        public string PrimaryFromAddress { get; set; }
         public string Subject { get; set; }
         public string OrignalBody { get; set; }
         public string SanitisedBody { get; set; }

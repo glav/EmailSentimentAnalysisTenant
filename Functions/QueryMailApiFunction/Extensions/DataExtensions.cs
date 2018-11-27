@@ -15,7 +15,6 @@ namespace QueryMailApiFunction.Extensions
                 return apiMessage;
             }
             apiMessage.AnalysedTimestampUtc = entity.AnalysedTimestampUtc;
-            apiMessage.PrimaryFromAddress = entity.PrimaryFromAddress;
             apiMessage.OrignalBody = entity.Body;
             apiMessage.FromAddresses = entity.FromAddresses;
             apiMessage.SanitisedBody = entity.SanitisedBody;

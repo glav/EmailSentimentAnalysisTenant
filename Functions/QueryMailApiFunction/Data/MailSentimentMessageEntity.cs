@@ -13,7 +13,6 @@ namespace QueryMailApiFunction.Data
         }
         public string FromAddresses { get; set; }
         public string ToAddresses { get; set; }
-        public string PrimaryFromAddress { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public string SanitisedBody { get; set; }
