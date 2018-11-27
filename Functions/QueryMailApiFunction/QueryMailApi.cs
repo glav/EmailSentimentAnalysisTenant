@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using QueryMailApiFunction.Data;
+using QueryMailApiFunction.Extensions;
 
 namespace QueryMailApiFunction
 {
@@ -24,11 +25,7 @@ namespace QueryMailApiFunction
             // Setup dependencies and invoke main processing component.
             var engine = new QueryEngine(coreDependencies, new QueryApiRepository(coreDependencies));
             var apiResponse = await engine.GetMailSentimentListAsync();
-            if (apiResponse.HasError)
-            {
-                return req.CreateErrorResponse(apiResponse.ErrorCode, apiResponse.ErrorMessage);
-            }
-            return req.CreateResponse(apiResponse.ResponseData);
+            return apiResponse.ToHttpResponseMessage(req);
         }
     }
 }

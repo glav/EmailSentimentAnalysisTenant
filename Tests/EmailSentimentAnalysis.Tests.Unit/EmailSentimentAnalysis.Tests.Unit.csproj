@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\Functions\MailCollectorFunction\MailCollectorFunction.csproj" />
     <ProjectReference Include="..\..\Functions\MailProcessorFunction\MailProcessorFunction.csproj" />
     <ProjectReference Include="..\..\Functions\MailSanitiserFunction\MailSanitiserFunction.csproj" />
+    <ProjectReference Include="..\..\Functions\QueryMailApiFunction\QueryMailApiFunction.csproj" />
   </ItemGroup>
 
 </Project>

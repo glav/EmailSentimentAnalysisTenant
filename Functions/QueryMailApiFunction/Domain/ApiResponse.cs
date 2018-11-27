@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace QueryMailApiFunction.Data
+namespace QueryMailApiFunction.Domain
 {
     public class ApiResponse<T> where T : class
     {

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using QueryMailApiFunction.Data;
+using QueryMailApiFunction.Domain;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace QueryMailApiFunction.Data
+namespace QueryMailApiFunction.Extensions
 {
     public static class DataExtensions
     {

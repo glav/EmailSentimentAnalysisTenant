@@ -1,5 +1,7 @@
 ﻿using Core;
 using QueryMailApiFunction.Data;
+using QueryMailApiFunction.Domain;
+using QueryMailApiFunction.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
