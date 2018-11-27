@@ -30,7 +30,7 @@ namespace MailCollectorFunction.Extensions
             }
             msgEntity.RowKey = (long.MaxValue - DateTime.UtcNow.Ticks).ToString().PadLeft(20, '0');
             var partitionKeyValue = 30000000 - (DateTime.UtcNow.Year * 10000 + (DateTime.UtcNow.Month * 100) + DateTime.UtcNow.Day);
-            msgEntity.PartitionKey = partitionKeyValue.ToString().PadLeft(5, '0');  // for sorting
+            msgEntity.PartitionKey = partitionKeyValue.ToString().PadLeft(10, '0');  // for sorting
 
             return msgEntity;
         }
