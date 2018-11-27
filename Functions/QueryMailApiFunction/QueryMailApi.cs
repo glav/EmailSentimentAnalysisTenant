@@ -23,7 +23,12 @@ namespace QueryMailApiFunction
 
             // Setup dependencies and invoke main processing component.
             var engine = new QueryEngine(coreDependencies, new QueryApiRepository(coreDependencies));
-            return req.CreateResponse(await engine.GetMailSentimentListAsync());
+            var apiResponse = await engine.GetMailSentimentListAsync();
+            if (apiResponse.HasError)
+            {
+                return req.CreateErrorResponse(apiResponse.ErrorCode, apiResponse.ErrorMessage);
+            }
+            return req.CreateResponse(apiResponse.ResponseData);
         }
     }
 }
