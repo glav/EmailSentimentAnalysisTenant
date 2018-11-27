@@ -149,3 +149,6 @@ output "storage_account_name" {
     value = "${local.sa_name}"
 }
 
+output "congitive_service_endpoint" {
+  value="${azurerm_cognitive_account.EmailSentimentCognitiveService.endpoint}"
+}
