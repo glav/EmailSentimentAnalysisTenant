@@ -80,5 +80,20 @@ namespace EmailSentimentAnalysis.Tests.Unit
             Assert.False(result.Contains('<'));
             Assert.False(result.Contains('>'));
         }
+
+        [Fact]
+        public void ShouldStripAllRemainingEncodedCharsFromString()
+        {
+            const string content = "* &nbsp;This WeekMehdi worked on production issues and finalize internal training.Giovani " +
+                "worked on Trix bug fixes.Next WeekMehdi will work on production issues.Giovani will work on Trix new features.Code " +
+                "Freeze Dates: The final VNext for 2018 is 19th or 20th Dec – this means to hit that date, we need to merge by 11th DecThe " +
+                "first release in Jan is 9th or 10th Jan in 2019 – this means we need to merge by to DM by 2nd JanING Direct (Banking &amp;" +
+                " Finance)ING DirectTechnologiesASP.NET WebForms, C#, WCF, VB, VB .NET, Polymer&nbsp;";
+            var engine = new RemoveEncodedCharactersStrategy();
+            var result = engine.SanitiseContent(content);
+
+            Assert.DoesNotContain("&nbsp;", result.ToLowerInvariant());
+            Assert.DoesNotContain("&amp;", result.ToLowerInvariant());
+        }
     }
 }
