@@ -36,16 +36,17 @@ namespace MailCollectorFunction.Data
             {
                 try
                 {
-                    Dependencies.DiagnosticLogging.Info("BEFORE INSERT");
                     var op = TableOperation.Insert(mail);
-                    Dependencies.DiagnosticLogging.Info("AFTER TABLE OP");
-                    var result = await tblRef.ExecuteAsync(op);
-                    Dependencies.DiagnosticLogging.Info("AFTER INSERT");
+                    var result = await tblRef.ExecuteAsync(op);  // <-- error happens here
                     if (result.HttpStatusCode >= 300)
                     {
                         Dependencies.DiagnosticLogging.Error("MailCollection: Unable to write MailMessage to table storage {m}", mail);
                     }
                     storedMsgs++;
+                }
+                catch (Microsoft.WindowsAzure.Storage.StorageException sx)
+                {
+                    Dependencies.DiagnosticLogging.Error(sx, "MailCollection: Error sending mail list to queue - StorageIssue, {@ExtendedErrorInformation} [{@m}]", sx.RequestInformation.ExtendedErrorInformation, mail);
                 }
                 catch (Exception ex)
                 {
