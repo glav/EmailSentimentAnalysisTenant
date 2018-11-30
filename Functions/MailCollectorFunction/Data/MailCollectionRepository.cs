@@ -27,31 +27,29 @@ namespace MailCollectorFunction.Data
                 return;
             }
             var numMsgs = mailList.Count;
-            try
-            {
-                Dependencies.DiagnosticLogging.Verbose("MailCollection: {numMsgs} mail messages to store.",numMsgs);
-                var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
+            int storedMsgs = 0;
+            Dependencies.DiagnosticLogging.Verbose("MailCollection: {numMsgs} mail messages to store.", numMsgs);
+            var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
 
-                foreach (var m in mailList)
+
+            foreach (var mail in mailList)
+            {
+                try
                 {
-                    var op = TableOperation.Insert(m);
+                    var op = TableOperation.Insert(mail);
                     var result = await tblRef.ExecuteAsync(op);
                     if (result.HttpStatusCode >= 300)
                     {
-                        Dependencies.DiagnosticLogging.Error("MailCollection: Unable to write MailMessage to table storage {m}", m);
+                        Dependencies.DiagnosticLogging.Error("MailCollection: Unable to write MailMessage to table storage {m}", mail);
                     }
+                    storedMsgs++;
                 }
-                Dependencies.DiagnosticLogging.Info("MailCollection: Mail messages stored: #{numMsgs}", numMsgs);
-            }
-            catch (Exception ex)
-            {
-                Dependencies.DiagnosticLogging.Error(ex, "MailCollection: Error sending mail list to queue ");
-                var baseEx = ex.GetBaseException();
-                if (baseEx != null)
+                catch (Exception ex)
                 {
-                    Dependencies.DiagnosticLogging.Error(baseEx, "MailCollection: Error sending mail list to queue (Inner/base error)");
+                    Dependencies.DiagnosticLogging.Error(ex, "MailCollection: Error sending mail list to queue [{@m}]",mail);
                 }
             }
+            Dependencies.DiagnosticLogging.Info("MailCollection: Mail messages stored: #{storedMsgs}", storedMsgs);
         }
 
         public async Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig)
