@@ -36,8 +36,11 @@ namespace MailCollectorFunction.Data
             {
                 try
                 {
+                    Dependencies.DiagnosticLogging.Info("BEFORE INSERT");
                     var op = TableOperation.Insert(mail);
+                    Dependencies.DiagnosticLogging.Info("AFTER TABLE OP");
                     var result = await tblRef.ExecuteAsync(op);
+                    Dependencies.DiagnosticLogging.Info("AFTER INSERT");
                     if (result.HttpStatusCode >= 300)
                     {
                         Dependencies.DiagnosticLogging.Error("MailCollection: Unable to write MailMessage to table storage {m}", mail);
