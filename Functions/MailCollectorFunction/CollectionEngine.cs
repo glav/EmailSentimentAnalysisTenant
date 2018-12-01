@@ -49,6 +49,10 @@ namespace MailCollectorFunction
 
         private void TrimMailDataIfRequired(List<RawMailMessageEntity> emails)
         {
+            if (emails == null || emails.Count == 0)
+            {
+                return;
+            }
             const int maxSize = 65530;
             // If a field is > 64k then it will fail when attempting to store in storage
             // Note: I know 65530 is not 64k exactly but keeping it just under
