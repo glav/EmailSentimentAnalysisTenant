@@ -28,6 +28,7 @@ namespace MailCollectorFunction
             try
             {
                 var emails = await _repository.CollectMailAsync(_mailConfig);
+                TrimMailDataIfRequired(emails);
                 await _repository.StoreMailAsync(emails);
             } catch (Exception ex)
             {
@@ -44,6 +45,24 @@ namespace MailCollectorFunction
             }
 
             return;
+        }
+
+        private void TrimMailDataIfRequired(List<RawMailMessageEntity> emails)
+        {
+            const int maxSize = 65530;
+            // If a field is > 64k then it will fail when attempting to store in storage
+            // Note: I know 65530 is not 64k exactly but keeping it just under
+            foreach (var mail in emails)
+            {
+                if (mail.Body.Length > maxSize)
+                {
+                    mail.Body = mail.Body.Substring(0, maxSize);
+                }
+                if (mail.Subject.Length > maxSize)
+                {
+                    mail.Subject = mail.Subject.Substring(0, maxSize);
+                }
+            }
         }
     }
 }
