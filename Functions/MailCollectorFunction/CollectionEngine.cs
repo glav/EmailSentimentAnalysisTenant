@@ -53,17 +53,19 @@ namespace MailCollectorFunction
             {
                 return;
             }
-            const int maxSize = 65530;
+            const int maxSize = 32000;
             // If a field is > 64k then it will fail when attempting to store in storage
             // Note: I know 65530 is not 64k exactly but keeping it just under
             foreach (var mail in emails)
             {
                 if (mail.Body.Length > maxSize)
                 {
+                    _coreDependencies.DiagnosticLogging.Warning("Trimming email Body as exceeds max length");
                     mail.Body = mail.Body.Substring(0, maxSize);
                 }
                 if (mail.Subject.Length > maxSize)
                 {
+                    _coreDependencies.DiagnosticLogging.Warning("Trimming email Subject as exceeds max length");
                     mail.Subject = mail.Subject.Substring(0, maxSize);
                 }
             }
