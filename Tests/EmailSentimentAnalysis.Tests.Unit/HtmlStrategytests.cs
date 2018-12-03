@@ -11,6 +11,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         private readonly TestDataHelper _testHelper = new TestDataHelper();
         private string _emailHtmlContent;
         private string _simpleHtmlEmailContent;
+        private string _complexHtmlEmailContent;
         private CoreDependencyInstances _coreDependencies;
 
         const string _textContainsHtmlComment = "<!--/* Font Definitions */@font-face	{font-family:\"Cambria Math\";	panose-1:2 4 5 3 5 4 6 3 2 4;}" +
@@ -26,6 +27,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
             _coreDependencies = CoreDependencies.Setup();
             _emailHtmlContent = _testHelper.GetFileDataEmbeddedInAssembly("WeeklyEmailHtmlContent.html");
             _simpleHtmlEmailContent = _testHelper.GetFileDataEmbeddedInAssembly("SImpleEmailInHtml.html");
+            _complexHtmlEmailContent = _testHelper.GetFileDataEmbeddedInAssembly("ComplexEmail.html");
         }
         [Fact]
         public void ShouldStripAllHtml()
@@ -39,13 +41,24 @@ namespace EmailSentimentAnalysis.Tests.Unit
         }
 
         [Fact]
-        public void ShouldStripHtmlComments()
+        public void ShouldStripHtmlCommentsFromSimpleContent()
         {
             var repo = new DummySanitiserRepo(1);
             var engine = new MailSanitiserEngine(_coreDependencies, repo);
             var result = engine.SanitiseContent(_simpleHtmlEmailContent, SanitiseContentType.Html & SanitiseContentType.PlainText);
 
             Assert.DoesNotContain("<!--",result);
+            Assert.DoesNotContain("-->", result);
+        }
+
+        [Fact]
+        public void ShouldStripHtmlCommentsFromComplexContent()
+        {
+            var repo = new DummySanitiserRepo(1);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var result = engine.SanitiseContent(_complexHtmlEmailContent, SanitiseContentType.Html & SanitiseContentType.PlainText);
+
+            Assert.DoesNotContain("<!--", result);
             Assert.DoesNotContain("-->", result);
         }
 

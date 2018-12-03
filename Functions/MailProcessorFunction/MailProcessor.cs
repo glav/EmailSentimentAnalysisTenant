@@ -13,7 +13,8 @@ namespace MailProcessorFunction
     public static class MailProcessor
     {
         [FunctionName("MailProcessor")]
-        public async static Task Run([QueueTrigger(DataStores.Queues.QueueNameProcessEmail)]string myQueueItem, ILogger log)
+        //public async static Task Run([QueueTrigger(DataStores.Queues.QueueNameProcessEmail)]string myQueueItem, ILogger log)
+        public async static Task Run([HttpTrigger("GET")]string myQueueItem, ILogger log)
         {
             var dependencies = CoreDependencies.Setup(log);
             var receivedMessage = GenericActionMessage.FromString(myQueueItem);

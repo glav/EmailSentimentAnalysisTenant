@@ -75,8 +75,21 @@ namespace MailProcessorFunction
                     .AddSentimentAnalysis(m.SanitisedBody)
                     .AddKeyPhraseAnalysis(m.SanitisedBody)
                     .AnalyseAllAsync();
-                m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
-                m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData.documents.First().keyPhrases);
+                if (!result.SentimentAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
+                {
+                    _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing SentimentAnalysis results: [{message}]", result.SentimentAnalysis.AnalysisResult.ResponseData.errors?.FirstOrDefault()?.message);
+                } else
+                {
+                    m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
+                }
+                if (!result.KeyPhraseAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
+                {
+                    _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing KeyphraseAnalysis results: [{message}]", result.KeyPhraseAnalysis.AnalysisResult.ResponseData.errors?.FirstOrDefault()?.message);
+                } else
+                {
+                    m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData?.documents?.First().keyPhrases);
+                }
+                
                 m.AnalysedTimestampUtc = DateTime.UtcNow;
             }
         }

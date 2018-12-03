@@ -28,6 +28,7 @@ namespace MailSanitiserFunction
             SanitiserStrategies = new List<IMailSanitiserStrategy>();
             SanitiserStrategies.Add(new RemoveAllButBodyStrategy());
             SanitiserStrategies.Add(new RemoveHtmlStrategy());
+            SanitiserStrategies.Add(new RemoveHtmlCommentsStrategy());
             SanitiserStrategies.Add(new RemoveEncodedCharactersStrategy());
         }
 
