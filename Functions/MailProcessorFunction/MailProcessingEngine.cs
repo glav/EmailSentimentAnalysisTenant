@@ -77,14 +77,16 @@ namespace MailProcessorFunction
                     .AnalyseAllAsync();
                 if (!result.SentimentAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
                 {
-                    _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing SentimentAnalysis results: [{message}]", result.SentimentAnalysis.AnalysisResult.ResponseData.errors?.FirstOrDefault()?.message);
+                    var message = result.SentimentAnalysis.AnalysisResult.ResponseData.errors != null ? result.SentimentAnalysis.AnalysisResult.ResponseData.errors.First().message : result.SentimentAnalysis.AnalysisResult.ApiCallResult.Data;
+                    _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing SentimentAnalysis results: [{message}]", message);
                 } else
                 {
                     m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
                 }
                 if (!result.KeyPhraseAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
                 {
-                    _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing KeyphraseAnalysis results: [{message}]", result.KeyPhraseAnalysis.AnalysisResult.ResponseData.errors?.FirstOrDefault()?.message);
+                    var message = result.KeyPhraseAnalysis.AnalysisResult.ResponseData.errors != null ? result.KeyPhraseAnalysis.AnalysisResult.ResponseData.errors.First().message : result.KeyPhraseAnalysis.AnalysisResult.ApiCallResult.Data;
+                    _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing KeyphraseAnalysis results: [{message}]", message);
                 } else
                 {
                     m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData?.documents?.First().keyPhrases);
