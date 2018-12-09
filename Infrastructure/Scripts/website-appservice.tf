@@ -18,6 +18,7 @@ resource "azurerm_app_service" "test" {
 
   site_config {
     dotnet_framework_version = "v4.0"
+    default_documents = ["index.htm", "index.html", "default.htm","default.html","hostingstart.html"]
   }
 
   app_settings {
