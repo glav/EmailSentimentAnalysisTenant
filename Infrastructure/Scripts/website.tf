@@ -10,7 +10,7 @@ resource "azurerm_app_service_plan" "emailsentimentdevwebsite" {
   }
 }
 
-resource "azurerm_app_service" "test" {
+resource "azurerm_app_service" "emailsentimentdevwebsite" {
   name                = "emailsentiment-website-${var.environment}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.EmailSentiment.name}"
