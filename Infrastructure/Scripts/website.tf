@@ -23,6 +23,7 @@ resource "azurerm_app_service" "emailsentimentdevwebsite" {
 
   app_settings {
     "ApiEndpoint" = "https://host.com"
+    "UseDummyData" = false
   }
 
 }
