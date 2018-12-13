@@ -68,20 +68,27 @@ namespace MailProcessorFunction
 
             foreach (var m in mailToAnalyse)
             {
-                var result = await TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys(apiKey, location)
+                var analysis = TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys(apiKey, location)
                     .AddCustomDiagnosticLogging(new SentimentAnalysisLoggingAdapter(_coreDependencies))
                     .UsingHttpCommunication()
-                    .WithTextAnalyticAnalysisActions()
-                    .AddSentimentAnalysis(m.SanitisedBody)
-                    .AddKeyPhraseAnalysis(m.SanitisedBody)
-                    .AnalyseAllAsync();
+                    .WithTextAnalyticAnalysisActions();
+
+                var sentences = m.SanitisedBody.SplitTextIntoSentences();
+                foreach (var sentence in sentences)
+                {
+                    analysis.AddSentimentAnalysis(sentence);
+                    analysis.AddKeyPhraseAnalysis(sentence);
+                }
+
+                var result = await analysis.AnalyseAllAsync();
+
                 if (!result.SentimentAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
                 {
                     var message = result.SentimentAnalysis.AnalysisResult.ResponseData.errors != null ? result.SentimentAnalysis.AnalysisResult.ResponseData.errors.First().message : result.SentimentAnalysis.AnalysisResult.ApiCallResult.Data;
                     _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing SentimentAnalysis results: [{message}]", message);
                 } else
                 {
-                    m.SentimentClassification = result.SentimentAnalysis.GetResults().First().score;
+                    m.SentimentClassification = result.SentimentAnalysis.GetResults().Average(s => s.score);
                 }
                 if (!result.KeyPhraseAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
                 {
@@ -89,7 +96,7 @@ namespace MailProcessorFunction
                     _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing KeyphraseAnalysis results: [{message}]", message);
                 } else
                 {
-                    m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData?.documents?.First().keyPhrases);
+                    m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData?.documents?.Select(s => s.keyPhrases));
                 }
                 
                 m.AnalysedTimestampUtc = DateTime.UtcNow;
