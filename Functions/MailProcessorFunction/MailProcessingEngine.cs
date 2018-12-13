@@ -96,7 +96,7 @@ namespace MailProcessorFunction
                     _coreDependencies.DiagnosticLogging.Error("ProcessMail: Error processing KeyphraseAnalysis results: [{message}]", message);
                 } else
                 {
-                    m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData?.documents?.Select(s => s.keyPhrases));
+                    m.SentimentKeyPhrases = string.Join(",", result.KeyPhraseAnalysis.AnalysisResult.ResponseData?.documents?.Select(s => string.Join(",",s.keyPhrases)));
                 }
                 
                 m.AnalysedTimestampUtc = DateTime.UtcNow;
