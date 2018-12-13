@@ -68,19 +68,12 @@ namespace MailProcessorFunction
 
             foreach (var m in mailToAnalyse)
             {
-                var analysis = TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys(apiKey, location)
+                var result = await TextAnalyticConfigurationSettings.CreateUsingConfigurationKeys(apiKey, location)
                     .AddCustomDiagnosticLogging(new SentimentAnalysisLoggingAdapter(_coreDependencies))
                     .UsingHttpCommunication()
-                    .WithTextAnalyticAnalysisActions();
-
-                var sentences = m.SanitisedBody.SplitTextIntoSentences();
-                foreach (var sentence in sentences)
-                {
-                    analysis.AddSentimentAnalysis(sentence);
-                    analysis.AddKeyPhraseAnalysis(sentence);
-                }
-
-                var result = await analysis.AnalyseAllAsync();
+                    .WithTextAnalyticAnalysisActions()
+                    .AddSentimentAnalysisSplitIntoSentences(m.SanitisedBody)
+                    .AnalyseAllAsync();
 
                 if (!result.SentimentAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
                 {
