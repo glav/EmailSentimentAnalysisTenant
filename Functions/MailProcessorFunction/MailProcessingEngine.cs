@@ -73,6 +73,7 @@ namespace MailProcessorFunction
                     .UsingHttpCommunication()
                     .WithTextAnalyticAnalysisActions()
                     .AddSentimentAnalysisSplitIntoSentences(m.SanitisedBody)
+                    .AddKeyPhraseAnalysis(m.SanitisedBody)
                     .AnalyseAllAsync();
 
                 if (!result.SentimentAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
