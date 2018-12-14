@@ -30,7 +30,7 @@ namespace QueryMailApiFunction
             {
                 var result = await _repository.GetMailSentimentAsync();
                 var numMails = result.Count();
-                _coreDependencies.DiagnosticLogging.Info("QueryApi: Retrieved {@numMails} from datastore.", numMails);
+                _coreDependencies.DiagnosticLogging.Verbose("QueryApi: Retrieved {@numMails} from datastore.", numMails);
 
                 return new ApiResponse<IEnumerable<QueryApiMessage>>(result.ToApiMessages());
             } catch (Exception ex)

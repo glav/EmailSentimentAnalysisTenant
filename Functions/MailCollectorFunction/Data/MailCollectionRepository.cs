@@ -23,7 +23,7 @@ namespace MailCollectorFunction.Data
 
             if (mailList == null || mailList.Count == 0)
             {
-                Dependencies.DiagnosticLogging.Info("MailCollection: No email to store, exiting.");
+                Dependencies.DiagnosticLogging.Verbose("MailCollection: No email to store, exiting.");
                 return;
             }
             var numMsgs = mailList.Count;
@@ -46,14 +46,14 @@ namespace MailCollectorFunction.Data
                 }
                 catch (Microsoft.WindowsAzure.Storage.StorageException sx)
                 {
-                    Dependencies.DiagnosticLogging.Error(sx, "MailCollection: Error sending mail list to queue - StorageIssue, {@ExtendedErrorInformation} [{@m}]", sx.RequestInformation.ExtendedErrorInformation, mail);
+                    Dependencies.DiagnosticLogging.Fatal(sx, "MailCollection: Error sending mail list to queue - StorageIssue, {@ExtendedErrorInformation} [{@m}]", sx.RequestInformation.ExtendedErrorInformation, mail);
                 }
                 catch (Exception ex)
                 {
-                    Dependencies.DiagnosticLogging.Error(ex, "MailCollection: Error sending mail list to queue [{@m}]",mail);
+                    Dependencies.DiagnosticLogging.Fatal(ex, "MailCollection: Error sending mail list to queue [{@m}]",mail);
                 }
             }
-            Dependencies.DiagnosticLogging.Info("MailCollection: Mail messages stored: #{storedMsgs}", storedMsgs);
+            Dependencies.DiagnosticLogging.Verbose("MailCollection: Mail messages stored: #{storedMsgs}", storedMsgs);
         }
 
         public async Task<List<RawMailMessageEntity>> CollectMailAsync(EmailConfiguration emailConfig)
@@ -72,7 +72,7 @@ namespace MailCollectorFunction.Data
                     await SetupConnectToEmailServerAndAuthenticate(emailConfig, emailClient, emailServerInfo);
 
                     var msgCountToCollect = emailClient.Count > emailConfig.MaxEmailsToRetrieve ? emailConfig.MaxEmailsToRetrieve : emailClient.Count; ;
-                    Dependencies.DiagnosticLogging.Info("MailCollection: Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue, retrieving {msgCountToCollect}",
+                    Dependencies.DiagnosticLogging.Debug("MailCollection: Successfully authenticated to email server:{emailServer}, {msgCount} mail msgs in queue, retrieving {msgCountToCollect}",
                         emailServerInfo, emailClient.Count, msgCountToCollect);
                     if (msgCountToCollect == 0)
                     {
@@ -107,7 +107,7 @@ namespace MailCollectorFunction.Data
             }
             catch (Exception ex)
             {
-                Dependencies.DiagnosticLogging.Error(ex, "MailCollection: Error deleting collected messages");
+                Dependencies.DiagnosticLogging.Fatal(ex, "MailCollection: Error deleting collected messages");
             }
         }
 

@@ -16,7 +16,7 @@ namespace MailSchedulerFunction
             log.LogInformation("Starting MailSchedulerStatusListener function");
             var coreDependencies = CoreDependencies.Setup(log);
 
-            coreDependencies.DiagnosticLogging.Info("MailSchedulerStatusListener received message at: {Now} UTC", DateTime.UtcNow);
+            coreDependencies.DiagnosticLogging.Verbose("MailSchedulerStatusListener received message at: {Now} UTC", DateTime.UtcNow);
 
             var repo = new DataSchedulerRepository(coreDependencies);
             await repo.ClearMailOperationProgressAsync();

@@ -50,7 +50,7 @@ namespace MailProcessorFunction.Data
         {
             if (analysedMail == null || analysedMail.Count == 0)
             {
-                Dependencies.DiagnosticLogging.Info("MailProcessor: No analysed email to store, exiting.");
+                Dependencies.DiagnosticLogging.Verbose("MailProcessor: No analysed email to store, exiting.");
                 return true;
             }
             var numMsgs = analysedMail.Count;

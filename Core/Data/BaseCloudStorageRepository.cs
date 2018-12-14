@@ -24,7 +24,7 @@ namespace Core.Data
 
         protected async Task ClearAllDataFromStorageAsync<T>(string tableName, string processName) where T : TableEntity, new()
         {
-            Dependencies.DiagnosticLogging.Info($"{processName}: Clearing/deleting records");
+            Dependencies.DiagnosticLogging.Verbose($"{processName}: Clearing/deleting records");
 
             var results = new List<T>();
             var tblRef = CreateClientTableReference(tableName);
@@ -83,7 +83,7 @@ namespace Core.Data
             var queueRef = queueClient.GetQueueReference(queueName);
             var msg = receivedMessage == null ? GenericActionMessage.CreateNewQueueMessage() : GenericActionMessage.CreateQueueMessageFromExistingMessage(receivedMessage);
             await queueRef.AddMessageAsync(msg);
-            Dependencies.DiagnosticLogging.Info($"{processName}: Acknowledgement message lodged.");
+            Dependencies.DiagnosticLogging.Verbose($"{processName}: Acknowledgement message lodged.");
         }
 
 

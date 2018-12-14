@@ -18,7 +18,7 @@ namespace MailSanitiserFunction.Data
         {
             if (mail == null || mail.Count == 0)
             {
-                Dependencies.DiagnosticLogging.Warning("Sanitisation: No mail to store.");
+                Dependencies.DiagnosticLogging.Verbose("Sanitisation: No mail to store.");
             }
             var numMsgs = mail.Count;
             try
@@ -50,29 +50,35 @@ namespace MailSanitiserFunction.Data
 
         public async Task<List<SanitisedMailMessageEntity>> GetCollectedMailAsync()
         {
-            Dependencies.DiagnosticLogging.Info("Sanitisation: Retrieving mail records");
+            Dependencies.DiagnosticLogging.Verbose("Sanitisation: Retrieving mail records");
 
             var results = new List<SanitisedMailMessageEntity>();
             var tblRef = CreateClientTableReference(DataStores.Tables.TableNameCollectMail);
             var qry = new TableQuery<SanitisedMailMessageEntity>();
 
-            TableContinuationToken continuationToken = null;
-            do
+            try
             {
-                // Retrieve a segment (up to 1,000 entities).
-                var tableQueryResult =
-                    await tblRef.ExecuteQuerySegmentedAsync(qry, continuationToken);
-                continuationToken = tableQueryResult.ContinuationToken;
-
-                var recordsRead = tableQueryResult.Results.Count;
-                Dependencies.DiagnosticLogging.Info("Sanitisation: Mail Records retrieved to sanitise: {recordsRead}", recordsRead);
-                if (continuationToken != null)
+                TableContinuationToken continuationToken = null;
+                do
                 {
-                    Dependencies.DiagnosticLogging.Verbose("Sanitisation: More mail records are in queue to be read");
-                }
-                results.AddRange(tableQueryResult.Results);
+                    // Retrieve a segment (up to 1,000 entities).
+                    var tableQueryResult =
+                        await tblRef.ExecuteQuerySegmentedAsync(qry, continuationToken);
+                    continuationToken = tableQueryResult.ContinuationToken;
 
-            } while (continuationToken != null);
+                    var recordsRead = tableQueryResult.Results.Count;
+                    Dependencies.DiagnosticLogging.Verbose("Sanitisation: Mail Records retrieved to sanitise: {recordsRead}", recordsRead);
+                    if (continuationToken != null)
+                    {
+                        Dependencies.DiagnosticLogging.Verbose("Sanitisation: More mail records are in queue to be read");
+                    }
+                    results.AddRange(tableQueryResult.Results);
+
+                } while (continuationToken != null);
+            } catch (Exception ex)
+            {
+                Dependencies.DiagnosticLogging.Fatal(ex, "Sanitisation: Error collecting mail for sanitisation");
+            }
 
             return results;
         }

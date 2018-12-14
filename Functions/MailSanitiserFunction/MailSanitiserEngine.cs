@@ -42,14 +42,14 @@ namespace MailSanitiserFunction
 
         public async Task SanitiseMailAsync(GenericActionMessage receivedMessage)
         {
-            _coreDependencies.DiagnosticLogging.Info("SanitiseMail: Sanitise All Mail");
+            _coreDependencies.DiagnosticLogging.Verbose("SanitiseMail: Sanitise All Mail");
 
             try
             {
                 var mail = await _repository.GetCollectedMailAsync();
                 if (mail.Count == 0)
                 {
-                    _coreDependencies.DiagnosticLogging.Info("SanitiseMail: Nothing to sanitise");
+                    _coreDependencies.DiagnosticLogging.Verbose("SanitiseMail: Nothing to sanitise");
                     await _repository.LodgeMailSanitisedAcknowledgementAsync(receivedMessage);
                     return;
                 }

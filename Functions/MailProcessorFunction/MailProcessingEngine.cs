@@ -29,14 +29,14 @@ namespace MailProcessorFunction
 
         public async Task AnalyseAllMailAsync(GenericActionMessage receivedMessage)
         {
-            _coreDependencies.DiagnosticLogging.Info("ProcessMail: Process All Mail");
+            _coreDependencies.DiagnosticLogging.Verbose("ProcessMail: Process All Mail");
 
             try
             {
                 var mail = await _repository.GetSanitisedMailAsync();
                 if (mail.Count == 0)
                 {
-                    _coreDependencies.DiagnosticLogging.Info("ProcessMail: Nothing to process");
+                    _coreDependencies.DiagnosticLogging.Verbose("ProcessMail: Nothing to process");
                     await _repository.LodgeMailProcessorAcknowledgementAsync(receivedMessage);
                     return;
                 }
@@ -59,7 +59,7 @@ namespace MailProcessorFunction
         {
             if (mailToAnalyse == null || mailToAnalyse.Count == 0)
             {
-                _coreDependencies.DiagnosticLogging.Info("ProcessMail: No mail to analyse");
+                _coreDependencies.DiagnosticLogging.Verbose("ProcessMail: No mail to analyse");
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace MailProcessorFunction
                     .UsingHttpCommunication()
                     .WithTextAnalyticAnalysisActions()
                     .AddSentimentAnalysisSplitIntoSentences(m.SanitisedBody)
-                    .AddKeyPhraseAnalysis(m.SanitisedBody)
+                    .AddKeyPhraseAnalysisSplitIntoSentences(m.SanitisedBody)
                     .AnalyseAllAsync();
 
                 if (!result.SentimentAnalysis.AnalysisResult.ActionSubmittedSuccessfully)
