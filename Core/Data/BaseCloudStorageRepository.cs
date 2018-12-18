@@ -22,6 +22,7 @@ namespace Core.Data
             return client.GetTableReference(tableName);
         }
 
+
         protected async Task ClearAllDataFromStorageAsync<T>(string tableName, string processName) where T : TableEntity, new()
         {
             Dependencies.DiagnosticLogging.Verbose($"{processName}: Clearing/deleting records");
