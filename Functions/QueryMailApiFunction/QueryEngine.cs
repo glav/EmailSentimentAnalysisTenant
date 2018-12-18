@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Data;
 using QueryMailApiFunction.Data;
 using QueryMailApiFunction.Domain;
 using QueryMailApiFunction.Extensions;
@@ -14,12 +15,14 @@ namespace QueryMailApiFunction
     public class QueryEngine
     {
         private readonly IQueryApiRepository _repository;
+        private readonly IStatusRepository _statusRepository;
         private readonly CoreDependencyInstances _coreDependencies;
 
-        public QueryEngine(CoreDependencyInstances coreDependencies, IQueryApiRepository repository)
+        public QueryEngine(CoreDependencyInstances coreDependencies, IQueryApiRepository repository, IStatusRepository statusRepository)
         {
             _repository = repository;
             _coreDependencies = coreDependencies;
+            _statusRepository = statusRepository;
         }
 
         public async Task<ApiResponse<IEnumerable<QueryApiMessage>>> GetMailSentimentListAsync()
@@ -38,6 +41,12 @@ namespace QueryMailApiFunction
                 _coreDependencies.DiagnosticLogging.Fatal(ex,"QueryApi: Error attempting to get mail sentiment list");
                 return new ApiResponse<IEnumerable<QueryApiMessage>>(HttpStatusCode.BadRequest, "Error querying the mail data source");
             }
+        }
+
+        public async Task<ApiResponse<string>> GetStatusAsync()
+        {
+            var status = await _statusRepository.GetStatusAsync();
+            return status != null ? new ApiResponse<string>(status.Message) : new ApiResponse<string>(HttpStatusCode.InternalServerError, "-Status not available-");
         }
     }
 }
