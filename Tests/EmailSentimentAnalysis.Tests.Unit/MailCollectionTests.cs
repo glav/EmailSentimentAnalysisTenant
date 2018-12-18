@@ -20,7 +20,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public async Task MailCollectionShouldLodgeCollectionCompleteAcknowledgementEvenIfMailFailure()
         {
             var repo = new DummyCollectionRepo(TestFlag.BlowUpOnCollection);
-            var engine = new CollectionEngine(_coreDependencies, repo, null);
+            var engine = new CollectionEngine(_coreDependencies, repo,new DummyStatusRepo(), null);
 
             await engine.PerformMailCollectionAsync(new GenericActionMessage());
 
@@ -33,7 +33,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public async Task MailCollectionShouldLodgeCollectionCompleteAcknowledgementEvenIfStorageFailure()
         {
             var repo = new DummyCollectionRepo(TestFlag.BlowUpOnStoring);
-            var engine = new CollectionEngine(_coreDependencies, repo, null);
+            var engine = new CollectionEngine(_coreDependencies, repo, new DummyStatusRepo(), null);
 
             await engine.PerformMailCollectionAsync(new GenericActionMessage());
 
