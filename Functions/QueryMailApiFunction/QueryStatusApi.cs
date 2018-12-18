@@ -1,33 +1,27 @@
 using System;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Core;
 using Core.Data;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using QueryMailApiFunction.Data;
 using QueryMailApiFunction.Extensions;
 
 namespace QueryMailApiFunction
 {
-    public static class QueryMailApi
+    public static class QueryStatusApi
     {
-        [FunctionName("QueryMail")]
+        [FunctionName("QueryStatus")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequestMessage req, ILogger log)
         {
             var coreDependencies = CoreDependencies.Setup(log);
-            var queryRepo = new QueryApiRepository(coreDependencies);
             var statusRepo = new StatusRepository(coreDependencies);
 
-            coreDependencies.DiagnosticLogging.Verbose("QueryMail: HTTP trigger function executed at: {Now} UTC", DateTime.UtcNow);
-
             // Setup dependencies and invoke main processing component.
-            var engine = new QueryEngine(coreDependencies,queryRepo ,statusRepo);
-            var apiResponse = await engine.GetMailSentimentListAsync();
+            var engine = new QueryEngine(coreDependencies, new QueryApiRepository(coreDependencies),statusRepo);
+            var apiResponse = await engine.GetStatusAsync();
             return apiResponse.ToHttpResponseMessage(req);
         }
     }

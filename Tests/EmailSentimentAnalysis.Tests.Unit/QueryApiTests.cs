@@ -25,7 +25,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public async Task QueryApiShouldReturnBadRequestOnError()
         {
             var repo = new DummyQueryRepo(true);
-            var engine = new QueryEngine(_coreDependencies, repo);
+            var engine = new QueryEngine(_coreDependencies, repo, new DummyStatusRepo());
             var response = await engine.GetMailSentimentListAsync();
 
             Assert.Equal(1, repo.InvocationCount);
@@ -36,7 +36,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public async Task QueryApiShouldReturnDataWhenNoError()
         {
             var repo = new DummyQueryRepo(false);
-            var engine = new QueryEngine(_coreDependencies, repo);
+            var engine = new QueryEngine(_coreDependencies, repo, new DummyStatusRepo());
             var response = await engine.GetMailSentimentListAsync();
 
             Assert.Equal(1, repo.InvocationCount);
