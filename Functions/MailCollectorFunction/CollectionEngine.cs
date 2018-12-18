@@ -14,10 +14,12 @@ namespace MailCollectorFunction
         private readonly CoreDependencyInstances _coreDependencies;
         private readonly IMailCollectionRepository _repository;
         private readonly EmailConfiguration _mailConfig;
-        public CollectionEngine(CoreDependencyInstances coreDependencies, IMailCollectionRepository repository, EmailConfiguration mailConfig)
+        private readonly IStatusRepository _statusRepository;
+        public CollectionEngine(CoreDependencyInstances coreDependencies, IMailCollectionRepository repository, IStatusRepository statusRepository, EmailConfiguration mailConfig)
         {
             _coreDependencies = coreDependencies;
             _repository = repository;
+            _statusRepository = statusRepository;
             _mailConfig = mailConfig;
         }
 
@@ -27,12 +29,18 @@ namespace MailCollectorFunction
 
             try
             {
+                await _statusRepository.UpdateStatusAsync("Collecting mail");
                 var emails = await _repository.CollectMailAsync(_mailConfig);
+        
                 TrimMailDataIfRequired(emails);
                 await _repository.StoreMailAsync(emails);
-            } catch (Exception ex)
+                await _statusRepository.UpdateStatusAsync($"Collected #{emails.Count} emails");
+            }
+            catch (Exception ex)
             {
                 _coreDependencies.DiagnosticLogging.Fatal(ex, "MailCollection: Error performing mail collection");
+                await _statusRepository.UpdateStatusAsync("Error collecting mail");
+
             }
 
             try
