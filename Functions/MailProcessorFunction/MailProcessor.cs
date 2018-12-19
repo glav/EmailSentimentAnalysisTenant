@@ -24,7 +24,8 @@ namespace MailProcessorFunction
             dependencies.DiagnosticLogging.Verbose("MailProcessor: Timer trigger function executed at: {now} UTC",now);
 
             var repo = new MailProcessorRepository(dependencies);
-            var engine = new MailProcessingEngine(dependencies, repo, analysisConfig);
+            var statusRepo = new StatusRepository(dependencies);
+            var engine = new MailProcessingEngine(dependencies, repo, analysisConfig,statusRepo);
             await engine.AnalyseAllMailAsync(receivedMessage);
 
         }

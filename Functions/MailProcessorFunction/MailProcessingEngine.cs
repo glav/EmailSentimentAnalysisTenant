@@ -18,13 +18,15 @@ namespace MailProcessorFunction
         private readonly CoreDependencyInstances _coreDependencies;
         private readonly IMailProcessorRepository _repository;
         private readonly AnalysisConfiguration _config;
-
+        private readonly IStatusRepository _statusRepository;
+ 
         public MailProcessingEngine(CoreDependencyInstances coreDependencies, 
-            IMailProcessorRepository repository, AnalysisConfiguration config)
+            IMailProcessorRepository repository, AnalysisConfiguration config, IStatusRepository statusRepository)
         {
             _coreDependencies = coreDependencies;
             _repository = repository;
             _config = config;
+            _statusRepository = statusRepository;
         }
 
         public async Task AnalyseAllMailAsync(GenericActionMessage receivedMessage)
@@ -41,7 +43,9 @@ namespace MailProcessorFunction
                     return;
                 }
 
+                await _statusRepository.UpdateStatusAsync("Analysing sentiment of emails");
                 await AnalyseAllMail(mail);
+                await _statusRepository.UpdateStatusAsync("Storing analysed emails");
                 var success = await _repository.StoreAllAnalysedMailAsync(mail);
                 if (success)
                 {
@@ -52,6 +56,7 @@ namespace MailProcessorFunction
             catch (Exception ex)
             {
                 _coreDependencies.DiagnosticLogging.Fatal(ex, "ProcessMail: Error attempting to Analyse Mail");
+                await _statusRepository.UpdateStatusAsync("Error analysing email sentiment");
             }
         }
 
