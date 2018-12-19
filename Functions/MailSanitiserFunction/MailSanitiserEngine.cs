@@ -14,11 +14,13 @@ namespace MailSanitiserFunction
     {
         private readonly CoreDependencyInstances _coreDependencies;
         private readonly IMailSanitiserRepository _repository;
+        private readonly IStatusRepository _statusRepository;
 
-        public MailSanitiserEngine(CoreDependencyInstances coreDependencies, IMailSanitiserRepository repository)
+        public MailSanitiserEngine(CoreDependencyInstances coreDependencies, IMailSanitiserRepository repository, IStatusRepository statusRepository)
         {
             _coreDependencies = coreDependencies;
             _repository = repository;
+            _statusRepository = statusRepository;
 
             SetupStrategies();
         }
@@ -58,6 +60,7 @@ namespace MailSanitiserFunction
                     m.SanitisedBody = SanitiseForAllContentTypes(m.Body);
                 });
                 await _repository.StoreSanitisedMailAsync(mail);
+                await _statusRepository.UpdateStatusAsync($"Sanitised {mail.Count} email messages");
                 await _repository.ClearCollectedMailAsync();
                 await _repository.LodgeMailSanitisedAcknowledgementAsync(receivedMessage);
             } catch (Exception ex)

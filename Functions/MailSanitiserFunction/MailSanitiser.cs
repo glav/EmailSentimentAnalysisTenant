@@ -20,7 +20,8 @@ namespace MailSanitiserFunction
             dependencies.DiagnosticLogging.Verbose("Sanitisation: MailSanitiser Timer trigger function executed at: {now} UTC",now);
 
             var repo = new MailSanitiserRepository(dependencies);
-            var engine = new MailSanitiserEngine(dependencies, repo);
+            var statusRepo = new StatusRepository(dependencies);
+            var engine = new MailSanitiserEngine(dependencies, repo,statusRepo);
             await engine.SanitiseMailAsync(receivedMessage);
         }
     }
