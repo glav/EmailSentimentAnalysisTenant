@@ -33,7 +33,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public void ShouldStripAllHtml()
         {
             var repo = new DummySanitiserRepo(1);
-            var engine = new MailSanitiserEngine(_coreDependencies,repo);
+            var engine = new MailSanitiserEngine(_coreDependencies,repo, new DummyStatusRepo());
             var result = engine.SanitiseContent(_emailHtmlContent, SanitiseContentType.Html);
 
             Assert.False(result.Contains('<'));
@@ -44,7 +44,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public void ShouldStripHtmlCommentsFromSimpleContent()
         {
             var repo = new DummySanitiserRepo(1);
-            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo, new DummyStatusRepo());
             var result = engine.SanitiseContent(_simpleHtmlEmailContent, SanitiseContentType.Html & SanitiseContentType.PlainText);
 
             Assert.DoesNotContain("<!--",result);
@@ -55,7 +55,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public void ShouldStripHtmlCommentsFromComplexContent()
         {
             var repo = new DummySanitiserRepo(1);
-            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo, new DummyStatusRepo());
             var result = engine.SanitiseContent(_complexHtmlEmailContent, SanitiseContentType.Html & SanitiseContentType.PlainText);
 
             Assert.DoesNotContain("<!--", result);
@@ -85,7 +85,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public void ShouldStripAllButBodyElementFromEmailHtmlAndRemoveMarkup()
         {
             var repo = new DummySanitiserRepo(1);
-            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo, new DummyStatusRepo());
             var result = engine.SanitiseForAllContentTypes(_emailHtmlContent);
 
             Assert.DoesNotContain("<body", result.ToLowerInvariant());

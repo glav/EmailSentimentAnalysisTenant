@@ -20,7 +20,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public async Task MailSanitisationShouldProceedThroughEntireWorkflowWhenMessagesAreCollected()
         {
             var repo = new DummySanitiserRepo(2);
-            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo, new DummyStatusRepo());
             var msg = new GenericActionMessage();
             await engine.SanitiseMailAsync(msg);
 
@@ -36,7 +36,7 @@ namespace EmailSentimentAnalysis.Tests.Unit
         public async Task MailSanitisationShouldOnlyProceedThroughFirstStepOfWorkflowWhenNoMailCollected()
         {
             var repo = new DummySanitiserRepo(0);
-            var engine = new MailSanitiserEngine(_coreDependencies, repo);
+            var engine = new MailSanitiserEngine(_coreDependencies, repo, new DummyStatusRepo());
             var msg = new GenericActionMessage();
             await engine.SanitiseMailAsync(msg);
 
